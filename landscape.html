@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The NAEP Output Landscape — Next Gen NAEP Design Sprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F6F8;
+    --card:#FFFFFF;
+    --ink:#16213A;
+    --slate:#566180;
+    --faint:#8A93A8;
+    --line:#E4E8EF;
+    --line-strong:#CFD6E2;
+    --blue:#2E5EAA;
+    --blue-deep:#1B2A4A;
+    --gold:#DBA02B;
+    --blue-tint:#DCE6F4;
+    /* persona accents */
+    --c-policy:#B4451F;
+    --c-state:#2E5EAA;
+    --c-research:#5B3FA0;
+    --c-educator:#1F7A52;
+    --c-media:#B7821A;
+    --c-public:#1A7C8A;
+
+    --serif:"Fraunces",Georgia,"Times New Roman",serif;
+    --sans:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:15px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px 96px;}
+
+  a{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(46,94,170,.28);}
+  a:hover{border-bottom-color:var(--blue);}
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+    color:var(--faint);
+    margin:0;
+  }
+
+  /* ---------- Masthead ---------- */
+  .masthead{padding:64px 0 30px;}
+  .masthead .star{color:var(--gold);font-size:13px;}
+  .masthead h1{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:clamp(34px,6vw,58px);
+    line-height:1.02;
+    letter-spacing:-.015em;
+    margin:14px 0 0;
+    max-width:13ch;
+  }
+  .masthead .lede{
+    font-size:17px;
+    color:var(--slate);
+    max-width:62ch;
+    margin:20px 0 0;
+  }
+  .meta-row{
+    display:flex;flex-wrap:wrap;gap:8px 22px;
+    margin-top:26px;padding-top:18px;
+    border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:11.5px;color:var(--faint);
+    letter-spacing:.04em;
+  }
+  .meta-row b{color:var(--slate);font-weight:500;}
+
+  /* ---------- Section scaffolding ---------- */
+  .section{margin-top:64px;}
+  .section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;}
+  .section-num{
+    font-family:var(--mono);font-size:12px;color:var(--gold);
+    letter-spacing:.1em;padding-top:6px;flex:none;
+  }
+  .section-head h2{
+    font-family:var(--serif);font-weight:500;
+    font-size:clamp(22px,3.4vw,30px);line-height:1.1;
+    letter-spacing:-.01em;margin:0;
+  }
+  .section-head p{margin:6px 0 0;color:var(--slate);font-size:14.5px;max-width:60ch;}
+
+  /* ---------- Figure 1 : landscape map ---------- */
+  .families{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(232px,1fr));
+    gap:14px;
+  }
+  .fam{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-top:3px solid var(--blue);
+    border-radius:3px;
+    padding:16px 16px 14px;
+  }
+  .fam h3{
+    font-family:var(--sans);font-weight:600;font-size:14.5px;
+    margin:0 0 3px;letter-spacing:-.005em;
+  }
+  .fam .role{font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase;}
+  .fam ul{list-style:none;margin:11px 0 0;padding:0;}
+  .fam li{
+    font-size:13px;color:var(--slate);
+    padding:5px 0 5px 14px;position:relative;
+    border-top:1px solid var(--line);line-height:1.4;
+  }
+  .fam li:first-child{border-top:none;}
+  .fam li::before{
+    content:"";position:absolute;left:0;top:11px;
+    width:5px;height:5px;border-radius:50%;background:var(--line-strong);
+  }
+  .fam li a{color:var(--ink);border-bottom-color:rgba(22,33,58,.18);}
+  .fam li a:hover{color:var(--blue);border-bottom-color:var(--blue);}
+
+  /* ---------- Section 2 : per-audience tables ---------- */
+  .persona{margin-top:34px;scroll-margin-top:20px;}
+  .persona-head{
+    display:flex;align-items:flex-start;gap:14px;
+    padding:0 0 14px;margin-bottom:0;
+    border-bottom:2px solid var(--accent,var(--blue));
+  }
+  .persona-tag{
+    font-family:var(--mono);font-size:12px;font-weight:500;
+    color:#fff;background:var(--accent,var(--blue));
+    padding:5px 9px;border-radius:3px;flex:none;letter-spacing:.04em;
+    line-height:1;margin-top:3px;
+  }
+  .persona-head h3{
+    font-family:var(--serif);font-weight:500;font-size:21px;
+    margin:0;line-height:1.1;letter-spacing:-.01em;
+  }
+  .persona-head .ask{
+    display:block;font-family:var(--sans);font-weight:400;
+    font-size:13.5px;color:var(--slate);margin-top:4px;
+  }
+  .persona-head .ask::before{content:"“";color:var(--accent,var(--blue));}
+  .persona-head .ask::after{content:"”";color:var(--accent,var(--blue));}
+
+  table.audience{
+    width:100%;border-collapse:collapse;
+    background:var(--card);
+    border:1px solid var(--line);border-top:none;
+    font-size:13.5px;
+  }
+  table.audience th{
+    text-align:left;font-family:var(--mono);font-weight:500;
+    font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--faint);padding:10px 14px;border-bottom:1px solid var(--line);
+    background:#FAFBFC;
+  }
+  table.audience td{
+    padding:11px 14px;border-bottom:1px solid var(--line);
+    vertical-align:top;color:var(--slate);line-height:1.45;
+  }
+  table.audience tr:last-child td{border-bottom:none;}
+  table.audience td.name{color:var(--ink);font-weight:500;width:26%;}
+  table.audience td.fmt{
+    width:16%;font-family:var(--mono);font-size:11px;color:var(--faint);
+    letter-spacing:.02em;
+  }
+  table.audience td.name a{color:var(--ink);border-bottom-color:rgba(22,33,58,.22);}
+  table.audience td.name a:hover{color:var(--accent,var(--blue));border-bottom-color:var(--accent,var(--blue));}
+  table.audience tr:hover td{background:#FCFCFD;}
+
+  /* ---------- Figure 2 : matrix ---------- */
+  .matrix-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table.matrix{
+    border-collapse:collapse;width:100%;min-width:660px;
+    background:var(--card);border:1px solid var(--line);
+  }
+  table.matrix th,table.matrix td{border:1px solid var(--line);}
+  table.matrix thead th{
+    font-family:var(--mono);font-size:10px;font-weight:500;
+    letter-spacing:.03em;color:var(--slate);text-transform:uppercase;
+    padding:12px 8px;vertical-align:bottom;text-align:center;
+    background:#FAFBFC;line-height:1.25;width:11%;
+  }
+  table.matrix thead th.corner{text-align:left;background:var(--card);width:22%;}
+  table.matrix tbody th{
+    text-align:left;font-family:var(--sans);font-weight:600;font-size:13px;
+    color:var(--ink);padding:11px 12px;background:#FAFBFC;
+  }
+  table.matrix tbody th span{
+    display:block;font-family:var(--mono);font-weight:400;font-size:10px;
+    color:var(--faint);letter-spacing:.03em;text-transform:uppercase;margin-top:2px;
+  }
+  table.matrix td{text-align:center;padding:10px 4px;}
+  .dot{display:inline-block;width:16px;height:16px;border-radius:50%;}
+  .dot.full{background:var(--blue);}
+  .dot.part{background:linear-gradient(90deg,var(--blue) 0 50%,var(--blue-tint) 50% 100%);box-shadow:inset 0 0 0 1px var(--line-strong);}
+  .dot.none{width:6px;height:6px;background:var(--line-strong);}
+
+  .legend{
+    display:flex;flex-wrap:wrap;gap:6px 20px;margin:14px 0 0;
+    font-family:var(--mono);font-size:11.5px;color:var(--slate);letter-spacing:.02em;
+  }
+  .legend span{display:inline-flex;align-items:center;gap:8px;}
+
+  /* ---------- callout / footer ---------- */
+  .note{
+    background:var(--card);border:1px solid var(--line);
+    border-left:3px solid var(--gold);border-radius:3px;
+    padding:16px 18px;margin-top:22px;font-size:13.5px;color:var(--slate);
+  }
+  .note b{color:var(--ink);font-weight:600;}
+  footer{
+    margin-top:64px;padding-top:22px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:11.5px;color:var(--faint);
+    line-height:1.7;letter-spacing:.02em;
+  }
+  footer a{color:var(--slate);}
+
+  @media (max-width:560px){
+    .wrap{padding:0 18px 64px;}
+    .families{grid-template-columns:1fr;}
+    table.audience td.fmt{display:none;}
+    table.audience td.name{width:42%;}
+  }
+
+  @media print{
+    body{background:#fff;font-size:11px;}
+    .wrap{max-width:none;padding:0;}
+    .fam,.note,table.audience,table.matrix{break-inside:avoid;}
+    .persona{break-inside:avoid;}
+    a{color:var(--ink);border:none;}
+    .masthead{padding:0 0 16px;}
+  }
+</style>
+</head>
+<body>
+<style>
+.sn{position:sticky;top:0;z-index:100;background:#16213A;border-bottom:1px solid rgba(255,255,255,.09);font-family:"Inter",system-ui,sans-serif;}
+.sn-in{max-width:1080px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.sn-brand{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;text-decoration:none;white-space:nowrap;}
+.sn-brand .st{color:#DBA02B;}
+.sn-links{display:flex;gap:3px;flex-wrap:wrap;}
+.sn-links a{font-size:13px;color:#AEB7C7;text-decoration:none;padding:5px 11px;border-radius:6px;transition:background .14s,color .14s;}
+.sn-links a:hover{color:#fff;background:rgba(255,255,255,.08);}
+.sn-links a.active{color:#16213A;background:#DBA02B;font-weight:600;}
+@media(max-width:560px){.sn-in{padding:9px 16px;}.sn-links a{padding:5px 9px;font-size:12.5px;}}
+</style>
+<nav class="sn"><div class="sn-in">
+<a class="sn-brand" href="index.html"><span class="st">★</span>&nbsp; Next Gen NAEP · Prototypes</a>
+<div class="sn-links">
+<a href="index.html">Overview</a>
+<a href="landscape.html" class="active" aria-current="page">Landscape</a>
+<a href="front-door.html">Front Door</a>
+<a href="answer-card.html">Answer Card</a>
+</div></div></nav>
+<div class="wrap">
+
+  <!-- ===================== MASTHEAD ===================== -->
+  <header class="masthead">
+    <p class="eyebrow"><span class="star">★</span>&nbsp; Next Gen NAEP · Design Sprint Workshop 1 · Reference</p>
+    <h1>The NAEP Output Landscape</h1>
+    <p class="lede">Everything NAEP publishes &mdash; report cards, data tools, released items, microdata, and special studies &mdash; mapped to the six kinds of people who actually reach for it. Built to orient the sprint conversation about how stakeholders <em>access, understand, and interact with</em> NAEP data.</p>
+    <div class="meta-row">
+      <span><b>Snapshot:</b> June 2026, current NAEP / Nation&rsquo;s Report Card sites</span>
+      <span><b>Sources:</b> nces.ed.gov/nationsreportcard · nationsreportcard.gov</span>
+      <span><b>Reads as:</b> 1 map → 6 audience tables → 1 usage matrix</span>
+    </div>
+  </header>
+
+  <!-- ===================== FIGURE 1 : LANDSCAPE MAP ===================== -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num">FIG 1</div>
+      <div>
+        <h2>The whole landscape, in seven families</h2>
+        <p>NAEP&rsquo;s many products cluster into seven families. The detailed tables and the usage matrix below both use these same seven groupings.</p>
+      </div>
+    </div>
+
+    <div class="families">
+
+      <div class="fam" style="border-top-color:var(--c-policy)">
+        <h3>Headline Report Cards</h3>
+        <div class="role">National results · "how are we doing"</div>
+        <ul>
+          <li><a href="https://www.nationsreportcard.gov/">The Nation&rsquo;s Report Card</a> (interactive results by subject)</li>
+          <li>Subjects: math, reading, science, writing, civics, U.S. history, geography, economics, TEL, arts</li>
+          <li>Grades 4, 8, 12 · achievement levels &amp; trends</li>
+          <li><a href="https://nces.ed.gov/nationsreportcard/ltt/">Long-Term Trend</a> (ages 9 / 13 / 17, 50-yr)</li>
+        </ul>
+      </div>
+
+      <div class="fam" style="border-top-color:var(--c-state)">
+        <h3>State &amp; District Results</h3>
+        <div class="role">Jurisdiction performance</div>
+        <ul>
+          <li><a href="https://nces.ed.gov/nationsreportcard/state/">NAEP State Results</a></li>
+          <li><a href="https://www.nationsreportcard.gov/profiles/stateprofile/">State Profiles</a> &amp; <a href="https://www.nationsreportcard.gov/profiles/districtprofile/">District Profiles</a></li>
+          <li><a href="https://nces.ed.gov/nationsreportcard/tuda/">Trial Urban District (TUDA) Results</a></li>
+          <li><a href="https://nces.ed.gov/nationsreportcard/snapshots/">State / District Snapshots</a> (1-pagers)</li>
+          <li><a href="https://nces.ed.gov/nationsreportcard/participating/private_nonpublic.aspx#performing">Private school results</a></li>
+        </ul>
+      </div>
+
+      <div class="fam" style="border-top-color:var(--c-research)">
+        <h3>Data Explorer &amp; API</h3>
+        <div class="role">Build-your-own tables</div>
+        <ul>
+          <li><a href="https://www.nationsreportcard.gov/ndecore/">NAEP Data Explorer (NDE)</a> &mdash; custom cross-tabs, significance, gap &amp; regression analysis</li>
+          <li>Export to Word / Excel / PDF</li>
+          <li><a href="https://www.nationsreportcard.gov/api_documentation.aspx">NAEP Data Service API</a></li>
+          <li><a href="https://www.nationsreportcard.gov/dashboards/schools_dashboard.aspx">Public/Private/Charter dashboard</a></li>
+        </ul>
+      </div>
+
+      <div class="fam" style="border-top-color:var(--c-educator)">
+        <h3>Items &amp; Frameworks</h3>
+        <div class="role">What&rsquo;s tested · what scores mean</div>
+        <ul>
+          <li><a href="https://www.nationsreportcard.gov/nqt/">NAEP Questions Tool</a> &mdash; 3,000+ released items, student responses, % correct</li>
+          <li><a href="https://www.nationsreportcard.gov/itemmaps/">Item Maps</a> &amp; <a href="https://nces.ed.gov/nationsreportcard/guides/scores_achv.aspx#achieve">Achievement-Level Descriptions</a></li>
+          <li><a href="https://nces.ed.gov/nationsreportcard/frameworkhow.aspx">Assessment Frameworks</a></li>
+          <li><a href="https://www.nationsreportcard.gov/takenaepnow/home">Take NAEP Now</a> · <a href="https://nces.ed.gov/nationsreportcard/experience/booklets.aspx">Sample-question booklets</a></li>
+        </ul>
+      </div>
+
+      <div class="fam" style="border-top-color:var(--c-research)">
+        <h3>Microdata &amp; Methods</h3>
+        <div class="role">For secondary analysis</div>
+        <ul>
+          <li><a href="https://nces.ed.gov/nationsreportcard/researchcenter/variablesrudata.aspx">Restricted-Use Datasets</a> (student-level)</li>
+          <li><a href="https://nces.ed.gov/nationsreportcard/researchcenter/software.aspx#edsurvey">EdSurvey</a> &amp; statistical software</li>
+          <li><a href="https://nces.ed.gov/nationsreportcard/tdw/">Technical Documentation</a></li>
+          <li><a href="https://www.nationsreportcard.gov/process_data/">Process Data</a> (keystroke / timing)</li>
+          <li><a href="https://nces.ed.gov/nationsreportcard/about/inclusion.aspx#inclusion_accomm_data">Inclusion / accommodation data</a></li>
+        </ul>
+      </div>
+
+      <div class="fam" style="border-top-color:var(--c-public)">
+        <h3>Special Studies</h3>
+        <div class="role">Deep dives &amp; linking</div>
+        <ul>
+          <li><a href="https://nces.ed.gov/nationsreportcard/studies/gaps/">Achievement Gaps</a> · <a href="https://nces.ed.gov/nationsreportcard/studies/orf/">Oral Reading Fluency</a></li>
+          <li><a href="https://nces.ed.gov/nationsreportcard/studies/statemapping/">Mapping State Proficiency Standards</a> + <a href="https://nces.ed.gov/nationsreportcard/studies/statemappingtool/">tool</a></li>
+          <li><a href="https://nces.ed.gov/nationsreportcard/studies/naep_timss/">Linking NAEP &amp; TIMSS</a></li>
+          <li><a href="https://nces.ed.gov/nationsreportcard/hsts/">High School Transcript Study</a> · <a href="https://nces.ed.gov/nationsreportcard/nies/">Nat&rsquo;l Indian Education Study</a></li>
+        </ul>
+      </div>
+
+      <div class="fam" style="border-top-color:var(--c-media)">
+        <h3>Plain-Language &amp; News</h3>
+        <div class="role">Explain &amp; communicate</div>
+        <ul>
+          <li><a href="https://nces.ed.gov/nationsreportcard/pubs_newsroom/">Newsroom</a> &amp; press releases</li>
+          <li><a href="https://nces.ed.gov/nationsreportcard/blog/">NAEP Plus Blog</a> · <a href="https://www.nationsreportcard.gov/media_video_archive.aspx">Videos</a></li>
+          <li><a href="https://nces.ed.gov/nationsreportcard/parents/">Parent</a> &amp; <a href="https://nces.ed.gov/nationsreportcard/students/">student</a> guides</li>
+          <li><a href="https://nces.ed.gov/nationsreportcard/glossary.aspx">Glossary</a> · <a href="https://www.nationsreportcard.gov/focus_on_naep/#/">Focus on NAEP</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 2 : BY AUDIENCE ===================== -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num">TABLE</div>
+      <div>
+        <h2>By audience: who reaches for what</h2>
+        <p>The same outputs, regrouped around six stakeholder types. Each lists the products that audience leans on most, what each delivers, and its format. Output names link to the live tool or page.</p>
+      </div>
+    </div>
+
+    <!-- 1. POLICYMAKERS -->
+    <div class="persona" style="--accent:var(--c-policy)">
+      <div class="persona-head">
+        <span class="persona-tag">01</span>
+        <div>
+          <h3>Policymakers &amp; Advocates</h3>
+          <span class="ask">How are students doing, and where should we focus attention and dollars?</span>
+        </div>
+      </div>
+      <table class="audience">
+        <thead><tr><th>Output</th><th>What it gives you</th><th>Format</th></tr></thead>
+        <tbody>
+          <tr><td class="name"><a href="https://www.nationsreportcard.gov/">The Nation&rsquo;s Report Card</a></td><td>National results by subject, grade, and year with achievement-level percentages and long-run trends.</td><td class="fmt">Interactive report</td></tr>
+          <tr><td class="name"><a href="https://www.nationsreportcard.gov/profiles/stateprofile/">State Profiles</a></td><td>Each state&rsquo;s standing in math, reading, writing, and science across grades 4/8/12.</td><td class="fmt">Web profile</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/snapshots/">State / District Snapshots</a></td><td>One-page summaries since 2002: scores, achievement levels, and subgroup performance.</td><td class="fmt">1-page PDF</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/ltt/">Long-Term Trend</a></td><td>Fifty-year reading and math trajectory for ages 9, 13, 17 &mdash; the "are we improving" baseline.</td><td class="fmt">Report + tool</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/studies/gaps/">Achievement Gaps</a></td><td>Gaps by race/ethnicity, gender, and income, and how they shift over time.</td><td class="fmt">Special study</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/about/policy_practice.aspx">How NAEP Shapes Policy</a></td><td>Plain explainer of NAEP&rsquo;s role in legislation and accountability.</td><td class="fmt">Explainer</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 2. STATE/DISTRICT -->
+    <div class="persona" style="--accent:var(--c-state)">
+      <div class="persona-head">
+        <span class="persona-tag">02</span>
+        <div>
+          <h3>State &amp; District Leaders</h3>
+          <span class="ask">How is my jurisdiction doing &mdash; against peers, against itself over time, and by group?</span>
+        </div>
+      </div>
+      <table class="audience">
+        <thead><tr><th>Output</th><th>What it gives you</th><th>Format</th></tr></thead>
+        <tbody>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/state/">NAEP State Results</a></td><td>Detailed state-level results and comparisons to the nation and other states.</td><td class="fmt">Results pages</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/tuda/">District (TUDA) Results &amp; Profiles</a></td><td>Performance for participating large urban districts in charts and maps, grades 4 &amp; 8.</td><td class="fmt">Web profile</td></tr>
+          <tr><td class="name"><a href="https://www.nationsreportcard.gov/ndecore/">NAEP Data Explorer</a></td><td>Custom cross-tabs by student group with significance, gap, and regression analysis; exports to Excel/Word/PDF.</td><td class="fmt">Interactive tool</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/studies/statemappingtool/">State Mapping Data Tool</a></td><td>Places a state&rsquo;s own proficiency cut score on the NAEP scale to compare standard rigor.</td><td class="fmt">Interactive tool</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/snapshots/">State / District Snapshots</a></td><td>Quick one-page jurisdiction summary for board meetings and briefings.</td><td class="fmt">1-page PDF</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/frameworkhow.aspx">Assessment Frameworks</a></td><td>What each subject test measures &mdash; useful when aligning to state standards.</td><td class="fmt">Reference doc</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 3. RESEARCHERS -->
+    <div class="persona" style="--accent:var(--c-research)">
+      <div class="persona-head">
+        <span class="persona-tag">03</span>
+        <div>
+          <h3>Researchers &amp; Psychometricians</h3>
+          <span class="ask">I need the microdata, the methods, and the freedom to run my own analysis.</span>
+        </div>
+      </div>
+      <table class="audience">
+        <thead><tr><th>Output</th><th>What it gives you</th><th>Format</th></tr></thead>
+        <tbody>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/researchcenter/variablesrudata.aspx">Restricted-Use Datasets</a></td><td>Student-level microdata for secondary analysis (requires a federal license).</td><td class="fmt">Licensed data</td></tr>
+          <tr><td class="name"><a href="https://www.nationsreportcard.gov/ndecore/">NAEP Data Explorer</a></td><td>Significance testing, gap analysis, and regressions without handling the raw files.</td><td class="fmt">Interactive tool</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/researchcenter/software.aspx#edsurvey">EdSurvey &amp; Stat Software</a></td><td>R package and tools built for NAEP&rsquo;s complex-sample, plausible-value design.</td><td class="fmt">R / software</td></tr>
+          <tr><td class="name"><a href="https://www.nationsreportcard.gov/api_documentation.aspx">NAEP Data Service API</a></td><td>Programmatic access to published results data.</td><td class="fmt">API</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/tdw/">Technical Documentation</a></td><td>Sampling, scaling, weighting, and analysis procedures in full detail.</td><td class="fmt">Reference site</td></tr>
+          <tr><td class="name"><a href="https://www.nationsreportcard.gov/process_data/">Process Data</a></td><td>Keystroke and timing data from the digital assessment platform.</td><td class="fmt">Dataset</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/researchcenter/papers.aspx">Research Library &amp; Studies</a></td><td>Validity studies, working papers, and technical/methodological reports.</td><td class="fmt">Publications</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 4. EDUCATORS -->
+    <div class="persona" style="--accent:var(--c-educator)">
+      <div class="persona-head">
+        <span class="persona-tag">04</span>
+        <div>
+          <h3>Educators &amp; Curriculum Specialists</h3>
+          <span class="ask">What does NAEP actually ask, and how can I use its items and standards?</span>
+        </div>
+      </div>
+      <table class="audience">
+        <thead><tr><th>Output</th><th>What it gives you</th><th>Format</th></tr></thead>
+        <tbody>
+          <tr><td class="name"><a href="https://www.nationsreportcard.gov/nqt/">NAEP Questions Tool</a></td><td>3,000+ released items with real student responses, scorer comments, and national % correct; build and assign quizzes.</td><td class="fmt">Interactive tool</td></tr>
+          <tr><td class="name"><a href="https://www.nationsreportcard.gov/takenaepnow/home">Take NAEP Now</a></td><td>Give or take a released assessment with immediate feedback vs. national and state results.</td><td class="fmt">Interactive tool</td></tr>
+          <tr><td class="name"><a href="https://www.nationsreportcard.gov/itemmaps/">Item Maps</a></td><td>Show what students at each achievement level know and can do, item by item.</td><td class="fmt">Interactive tool</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/guides/scores_achv.aspx#achieve">Achievement-Level Descriptions</a></td><td>What Basic, Proficient, and Advanced mean for each subject and grade.</td><td class="fmt">Reference doc</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/frameworkhow.aspx">Assessment Frameworks</a></td><td>The content and skills each assessment covers.</td><td class="fmt">Reference doc</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/experience/survey_questionnaires.aspx">Survey Questionnaires</a></td><td>How student background and experience factors relate to performance.</td><td class="fmt">Data + reports</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 5. JOURNALISTS -->
+    <div class="persona" style="--accent:var(--c-media)">
+      <div class="persona-head">
+        <span class="persona-tag">05</span>
+        <div>
+          <h3>Journalists &amp; Media</h3>
+          <span class="ask">Give me fast, accurate headline numbers, charts I can use, and the context.</span>
+        </div>
+      </div>
+      <table class="audience">
+        <thead><tr><th>Output</th><th>What it gives you</th><th>Format</th></tr></thead>
+        <tbody>
+          <tr><td class="name"><a href="https://www.nationsreportcard.gov/">The Nation&rsquo;s Report Card</a></td><td>Headline results, achievement levels, and trends already visualized.</td><td class="fmt">Interactive report</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/pubs_newsroom/">Newsroom</a></td><td>Official release materials, fact sheets, and embargoed press briefings.</td><td class="fmt">Press materials</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/snapshots/">State / District Snapshots</a></td><td>Quick, citable one-page numbers for a local angle.</td><td class="fmt">1-page PDF</td></tr>
+          <tr><td class="name"><a href="https://www.nationsreportcard.gov/ndecore/">NAEP Data Explorer</a></td><td>Pull a specific figure and export the chart.</td><td class="fmt">Interactive tool</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/blog/">NAEP Plus Blog</a></td><td>In-depth analysis and context written by NCES staff.</td><td class="fmt">Blog</td></tr>
+          <tr><td class="name"><a href="https://www.nationsreportcard.gov/media_video_archive.aspx">Videos &amp; Media Archive</a></td><td>Explainer clips and broadcast-ready material.</td><td class="fmt">Video</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 6. PARENTS/PUBLIC -->
+    <div class="persona" style="--accent:var(--c-public)">
+      <div class="persona-head">
+        <span class="persona-tag">06</span>
+        <div>
+          <h3>Parents, Students &amp; Public</h3>
+          <span class="ask">What is NAEP, and how are kids &mdash; including mine &mdash; actually doing?</span>
+        </div>
+      </div>
+      <table class="audience">
+        <thead><tr><th>Output</th><th>What it gives you</th><th>Format</th></tr></thead>
+        <tbody>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/parents/">What You Need to Know</a></td><td>Plain-language overview of what NAEP is and why it matters.</td><td class="fmt">Guide</td></tr>
+          <tr><td class="name"><a href="https://www.nationsreportcard.gov/">The Nation&rsquo;s Report Card</a></td><td>Accessible national and state results for the general public.</td><td class="fmt">Interactive report</td></tr>
+          <tr><td class="name"><a href="https://www.nationsreportcard.gov/takenaepnow/home">Take NAEP Now</a></td><td>Try an actual released NAEP assessment.</td><td class="fmt">Interactive tool</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/students/">What&rsquo;s on the Test</a></td><td>Sample questions and a student-facing intro.</td><td class="fmt">Guide + items</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/snapshots/">State / District Snapshots</a></td><td>A simple one-page read on local results.</td><td class="fmt">1-page PDF</td></tr>
+          <tr><td class="name"><a href="https://nces.ed.gov/nationsreportcard/pdf/parents/2012469.pdf">NAEP and Your Child</a></td><td>Short printable parent guide.</td><td class="fmt">PDF</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+  <!-- ===================== FIGURE 2 : MATRIX ===================== -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num">FIG 2</div>
+      <div>
+        <h2>Who uses what</h2>
+        <p>Each audience against the seven output families. The pattern is the point: headline results and jurisdiction data serve almost everyone, while microdata and methods concentrate in one corner &mdash; a useful starting map for spotting access gaps and overlaps.</p>
+      </div>
+    </div>
+
+    <div class="matrix-scroll">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th class="corner">Audience &nbsp;✕&nbsp; Output family</th>
+            <th>Headline<br>Report Cards</th>
+            <th>State &amp;<br>District</th>
+            <th>Data Explorer<br>&amp; API</th>
+            <th>Items &amp;<br>Frameworks</th>
+            <th>Microdata<br>&amp; Methods</th>
+            <th>Special<br>Studies</th>
+            <th>Plain-Lang.<br>&amp; News</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Policymakers &amp; Advocates<span>01</span></th>
+            <td><span class="dot full"></span></td>
+            <td><span class="dot full"></span></td>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot none"></span></td>
+            <td><span class="dot none"></span></td>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot full"></span></td>
+          </tr>
+          <tr>
+            <th>State &amp; District Leaders<span>02</span></th>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot full"></span></td>
+            <td><span class="dot full"></span></td>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot part"></span></td>
+          </tr>
+          <tr>
+            <th>Researchers &amp; Psychometricians<span>03</span></th>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot full"></span></td>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot full"></span></td>
+            <td><span class="dot full"></span></td>
+            <td><span class="dot none"></span></td>
+          </tr>
+          <tr>
+            <th>Educators &amp; Curriculum<span>04</span></th>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot none"></span></td>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot full"></span></td>
+            <td><span class="dot none"></span></td>
+            <td><span class="dot none"></span></td>
+            <td><span class="dot part"></span></td>
+          </tr>
+          <tr>
+            <th>Journalists &amp; Media<span>05</span></th>
+            <td><span class="dot full"></span></td>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot none"></span></td>
+            <td><span class="dot none"></span></td>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot full"></span></td>
+          </tr>
+          <tr>
+            <th>Parents, Students &amp; Public<span>06</span></th>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot none"></span></td>
+            <td><span class="dot none"></span></td>
+            <td><span class="dot part"></span></td>
+            <td><span class="dot none"></span></td>
+            <td><span class="dot none"></span></td>
+            <td><span class="dot full"></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="legend">
+      <span><span class="dot full"></span> Primary &mdash; a main entry point</span>
+      <span><span class="dot part"></span> Secondary &mdash; used when needed</span>
+      <span><span class="dot none"></span> Occasional / rarely</span>
+    </div>
+
+    <div class="note">
+      <b>How to read this for the sprint.</b> Density falls off sharply toward the right and bottom: the products that are hardest to access (microdata, methods, special studies) reach the fewest audiences, while the same two or three headline products carry the load for everyone. Those concentration points &mdash; and the empty cells &mdash; are candidate territory for "where does access break down" and "what would a better NAEP surface to whom."
+    </div>
+  </section>
+
+  <footer>
+    Snapshot compiled June 2026 from the live NAEP and Nation&rsquo;s Report Card websites; product names and groupings reflect NCES&rsquo;s current menus. Assignments of audience and usage intensity are an interpretive starting point for discussion, not an official NAEP taxonomy.<br>
+    Primary sources: <a href="https://nces.ed.gov/nationsreportcard/">nces.ed.gov/nationsreportcard</a> · <a href="https://nces.ed.gov/nationsreportcard/data/">/data</a> · <a href="https://www.nationsreportcard.gov/">nationsreportcard.gov</a>
+  </footer>
+
+</div>
+</body>
+</html>

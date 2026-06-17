@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NAEP Answer Card — Concept Prototype · Next Gen NAEP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F6F8; --card:#FFFFFF; --ink:#16213A; --slate:#566180;
+    --faint:#8A93A8; --line:#E4E8EF; --line-strong:#CFD6E2;
+    --blue:#2E5EAA; --blue-deep:#1B2A4A; --gold:#DBA02B;
+    --blue-tint:#DCE6F4; --blue-wash:#F0F5FC;
+    --green:#1F7A52; --red:#B4451F;
+    --serif:"Fraunces",Georgia,serif;
+    --sans:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px 90px;}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--faint);margin:0;}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:18px 0 0;flex-wrap:wrap;}
+  .brand{font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--faint);}
+  .brand .star{color:var(--gold);}
+  .tag-proto{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);
+    border-radius:100px;padding:4px 10px;}
+
+  .hero{padding:46px 0 6px;}
+  .hero h1{font-family:var(--serif);font-weight:500;
+    font-size:clamp(28px,5.2vw,44px);line-height:1.05;letter-spacing:-.015em;
+    margin:0;max-width:18ch;}
+  .hero .sub{font-size:16px;color:var(--slate);max-width:58ch;margin:14px 0 0;}
+
+  .picker{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .picker label{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--faint);}
+  select{font-family:var(--sans);font-size:15px;color:var(--ink);background:var(--card);
+    border:2px solid var(--line-strong);border-radius:6px;padding:11px 14px;cursor:pointer;
+    outline:none;min-width:210px;}
+  select:focus{border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-wash);}
+  .quick{margin-top:12px;display:flex;gap:7px;flex-wrap:wrap;align-items:center;}
+  .quick .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.05em;
+    text-transform:uppercase;color:var(--faint);}
+  .chip{font-family:var(--sans);font-size:12.5px;color:var(--slate);background:var(--card);
+    border:1px solid var(--line-strong);border-radius:100px;padding:6px 12px;cursor:pointer;
+    transition:all .14s;}
+  .chip:hover{border-color:var(--blue);color:var(--blue);}
+
+  .answer{margin-top:26px;background:var(--card);border:1px solid var(--line);
+    border-radius:9px;overflow:hidden;box-shadow:0 1px 3px rgba(22,33,58,.05);}
+  .answer-head{padding:22px 26px 18px;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#FCFCFD,#fff);}
+  .answer-state{font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--gold);margin:0 0 8px;}
+  .headline{font-family:var(--serif);font-weight:500;font-size:21px;line-height:1.32;
+    letter-spacing:-.008em;margin:0;}
+  .headline b{font-weight:600;}
+  .pill{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:500;
+    padding:2px 9px;border-radius:100px;letter-spacing:.02em;white-space:nowrap;}
+  .pill.higher{background:rgba(31,122,82,.13);color:var(--green);}
+  .pill.same{background:#EEF0F4;color:var(--slate);}
+  .pill.lower{background:rgba(180,69,31,.12);color:var(--red);}
+
+  .block{padding:20px 26px;border-bottom:1px solid var(--line);}
+  .block:last-child{border-bottom:none;}
+  .block h3{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--faint);margin:0 0 12px;}
+  .block p{margin:0;font-size:14.5px;color:var(--ink);line-height:1.55;}
+  .block p.muted{color:var(--slate);}
+
+  .stats{display:flex;gap:10px;flex-wrap:wrap;}
+  .stat{flex:1;min-width:150px;background:#FAFBFC;border:1px solid var(--line);
+    border-radius:7px;padding:13px 15px;}
+  .stat .k{font-family:var(--mono);font-size:10px;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--faint);}
+  .stat .v{font-family:var(--serif);font-size:27px;font-weight:500;margin-top:3px;line-height:1;}
+  .stat .c{font-size:12px;color:var(--slate);margin-top:5px;}
+
+  .chart{margin-top:4px;}
+  .axis-note{font-family:var(--mono);font-size:10px;color:var(--faint);
+    letter-spacing:.02em;margin-bottom:12px;}
+  .bar-row{display:grid;grid-template-columns:118px 1fr 38px;align-items:center;
+    gap:10px;margin-bottom:7px;}
+  .bar-lab{font-size:12.5px;color:var(--slate);text-align:right;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;}
+  .bar-lab.self{color:var(--ink);font-weight:600;}
+  .bar-lab.nation{color:var(--blue-deep);font-weight:600;}
+  .bar-track{position:relative;height:22px;background:#F2F4F7;border-radius:4px;}
+  .bar-fill{position:absolute;left:0;top:0;height:100%;border-radius:4px;
+    background:var(--line-strong);transition:width .5s ease;}
+  .bar-fill.self{background:var(--gold);}
+  .bar-fill.nation{background:transparent;border:2px dashed var(--blue);}
+  .bar-fill.peer{background:#B9C4D6;}
+  .bar-val{font-family:var(--mono);font-size:12px;color:var(--ink);font-weight:500;}
+  .bar-val.self{color:#a9781a;}
+
+  .takeaway{background:var(--blue-wash);border:1px solid var(--blue-tint);
+    border-radius:7px;padding:14px 16px;margin-top:14px;font-size:14px;color:var(--ink);
+    line-height:1.5;}
+  .takeaway b{color:var(--blue-deep);}
+  .note-soft{font-size:12.5px;color:var(--slate);margin-top:11px;line-height:1.5;}
+
+  .methods{margin-top:24px;background:var(--card);border:1px solid var(--line);
+    border-left:3px solid var(--gold);border-radius:5px;padding:16px 18px;}
+  .methods h3{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--faint);margin:0 0 10px;}
+  .methods p{margin:0 0 9px;font-size:12.5px;color:var(--slate);line-height:1.5;}
+  .methods p:last-child{margin-bottom:0;}
+  .methods b{color:var(--ink);font-weight:600;}
+
+  footer{margin-top:30px;padding-top:18px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:11px;color:var(--faint);line-height:1.7;letter-spacing:.02em;}
+
+  @media (max-width:560px){
+    .wrap{padding:0 16px 60px;}
+    .bar-row{grid-template-columns:78px 1fr 34px;gap:7px;}
+    .headline{font-size:19px;}
+  }
+  @media (prefers-reduced-motion:reduce){ .bar-fill{transition:none;} }
+</style>
+</head>
+<body>
+<style>
+.sn{position:sticky;top:0;z-index:100;background:#16213A;border-bottom:1px solid rgba(255,255,255,.09);font-family:"Inter",system-ui,sans-serif;}
+.sn-in{max-width:1080px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.sn-brand{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;text-decoration:none;white-space:nowrap;}
+.sn-brand .st{color:#DBA02B;}
+.sn-links{display:flex;gap:3px;flex-wrap:wrap;}
+.sn-links a{font-size:13px;color:#AEB7C7;text-decoration:none;padding:5px 11px;border-radius:6px;transition:background .14s,color .14s;}
+.sn-links a:hover{color:#fff;background:rgba(255,255,255,.08);}
+.sn-links a.active{color:#16213A;background:#DBA02B;font-weight:600;}
+@media(max-width:560px){.sn-in{padding:9px 16px;}.sn-links a{padding:5px 9px;font-size:12.5px;}}
+</style>
+<nav class="sn"><div class="sn-in">
+<a class="sn-brand" href="index.html"><span class="st">★</span>&nbsp; Next Gen NAEP · Prototypes</a>
+<div class="sn-links">
+<a href="index.html">Overview</a>
+<a href="landscape.html">Landscape</a>
+<a href="front-door.html">Front Door</a>
+<a href="answer-card.html" class="active" aria-current="page">Answer Card</a>
+</div></div></nav>
+<div class="wrap">
+
+  <div class="topbar">
+    <span class="brand"><span class="star">★</span> NAEP · The Nation's Report Card</span>
+    <span class="tag-proto">Concept prototype · Next Gen NAEP</span>
+  </div>
+
+  <header class="hero">
+    <h1>How are your state's 8th&#8209;graders doing in math&nbsp;&mdash; really?</h1>
+    <p class="sub">One synthesized answer instead of a chart to decode: where your state stands, whether the gap is real or just noise, and &mdash; the part NAEP doesn't offer today &mdash; how it compares to states facing <em>similar economic conditions</em>.</p>
+
+    <div class="picker">
+      <label for="state-select">Pick a state</label>
+      <select id="state-select" aria-label="Select a state"></select>
+    </div>
+    <div class="quick">
+      <span class="lbl">Try</span>
+      <button class="chip" data-st="MS">Mississippi</button>
+      <button class="chip" data-st="MD">Maryland</button>
+      <button class="chip" data-st="IL">Illinois</button>
+      <button class="chip" data-st="MA">Massachusetts</button>
+      <button class="chip" data-st="NM">New Mexico</button>
+    </div>
+  </header>
+
+  <main id="card" aria-live="polite"></main>
+
+  <section class="methods">
+    <h3>How this card is built</h3>
+    <p><b>Where you stand</b> — 2024 grade-8 mathematics average scale scores, achievement-level percentages, and the significantly-higher / not-different / significantly-lower call against the nation are NAEP's own published results and official significance determinations (NCES, 2024). Two states with the same rounded score can still get different significance calls, because each estimate carries its own standard error — which is exactly why a plain-language, significance-aware read beats eyeballing a number.</p>
+    <p><b>Similar states</b> — "economically similar" is defined here by closeness in the child-poverty rate (U.S. Census ACS 2023, under age 18), the single strongest economic correlate of NAEP performance. It is one reasonable peer definition among several; a fuller model would blend poverty, English-learner share, and racial/ethnic composition. The peer-average comparison is <b>descriptive and is not significance-tested</b> — a fairer reference point, not a verdict.</p>
+    <p><b>Not in this prototype slice</b> — each state's own trend over time, other subjects and grades, and a multi-factor peer model. In a production version these would come live from the NAEP Data Service API rather than baked-in data.</p>
+  </section>
+
+  <footer>
+    Concept prototype for the Next Gen NAEP Design Sprint &mdash; not a live NAEP product. Scores &amp; significance: NAEP 2024 Mathematics, Grade 8 (NCES / The Nation's Report Card). Child poverty: U.S. Census Bureau, ACS 1-Year, 2023. National grade-8 math: 272 in 2024 (281 in 2019, 273 in 2022).
+  </footer>
+
+</div>
+
+<script>
+/* ===== verified data: 50 states + DC =====
+   [abbr, name, score2024, %atAboveBasic, %atAboveProficient, sigVsNation(H/S/L), childPovertyPct] */
+const RAW = [
+ ["AL","Alabama",262,50,18,"L",21.1],["AK","Alaska",264,54,22,"L",12.1],
+ ["AZ","Arizona",270,57,26,"S",15.4],["AR","Arkansas",266,54,20,"L",20.9],
+ ["CA","California",269,54,25,"L",14.9],["CO","Colorado",278,65,32,"H",10.7],
+ ["CT","Connecticut",277,63,32,"H",13.3],["DE","Delaware",263,51,19,"L",15.2],
+ ["DC","District of Columbia",262,46,20,"L",17.1],["FL","Florida",267,55,21,"L",15.7],
+ ["GA","Georgia",269,56,24,"L",18.4],["HI","Hawaii",270,58,23,"L",11.4],
+ ["ID","Idaho",278,67,31,"H",11.5],["IL","Illinois",277,62,32,"H",14.7],
+ ["IN","Indiana",278,67,31,"H",15.4],["IA","Iowa",275,65,27,"H",13.6],
+ ["KS","Kansas",274,63,26,"S",13.2],["KY","Kentucky",271,58,24,"S",21.0],
+ ["LA","Louisiana",267,54,21,"L",25.0],["ME","Maine",273,61,25,"S",12.6],
+ ["MD","Maryland",268,54,25,"L",10.6],["MA","Massachusetts",283,68,37,"H",12.6],
+ ["MI","Michigan",270,57,24,"S",17.6],["MN","Minnesota",282,71,34,"H",10.1],
+ ["MS","Mississippi",269,57,22,"L",23.2],["MO","Missouri",270,59,23,"S",14.4],
+ ["MT","Montana",279,68,32,"H",12.2],["NE","Nebraska",280,69,32,"H",11.1],
+ ["NV","Nevada",265,52,20,"L",16.1],["NH","New Hampshire",280,69,32,"H",8.0],
+ ["NJ","New Jersey",282,65,37,"H",12.9],["NM","New Mexico",256,42,14,"L",25.3],
+ ["NY","New York",271,58,26,"S",18.6],["NC","North Carolina",276,62,31,"H",17.6],
+ ["ND","North Dakota",280,71,29,"H",8.7],["OH","Ohio",279,65,32,"H",17.7],
+ ["OK","Oklahoma",264,53,17,"L",20.8],["OR","Oregon",268,55,24,"L",13.6],
+ ["PA","Pennsylvania",276,63,31,"H",15.7],["RI","Rhode Island",270,57,26,"L",13.4],
+ ["SC","South Carolina",268,55,24,"L",19.1],["SD","South Dakota",281,71,33,"H",14.6],
+ ["TN","Tennessee",276,62,31,"S",19.7],["TX","Texas",269,56,24,"S",18.4],
+ ["UT","Utah",282,70,35,"H",9.5],["VT","Vermont",276,64,29,"H",9.0],
+ ["VA","Virginia",275,63,29,"S",12.7],["WA","Washington",274,59,30,"S",12.2],
+ ["WV","West Virginia",261,48,18,"L",20.1],["WI","Wisconsin",283,69,37,"H",12.8],
+ ["WY","Wyoming",278,68,30,"H",14.8]
+];
+const NAT = {score:272, basic:59, prof:27, y2019:281, y2022:273};
+const K = 6;
+
+const STATES = RAW.map(r=>({a:r[0],n:r[1],s:r[2],b:r[3],p:r[4],g:r[5],pov:r[6]}))
+                  .sort((x,y)=>x.n.localeCompare(y.n));
+const BY = {}; STATES.forEach(s=>BY[s.a]=s);
+
+function rankOf(st){ return 1 + STATES.filter(o=>o.s>st.s).length; }
+function peersOf(st){
+  return STATES.filter(o=>o.a!==st.a)
+    .map(o=>({o,d:Math.abs(o.pov-st.pov)}))
+    .sort((x,y)=> x.d-y.d || x.o.n.localeCompare(y.o.n))
+    .slice(0,K).map(x=>x.o);
+}
+function mean(arr){ return arr.reduce((a,b)=>a+b,0)/arr.length; }
+function esc(s){ return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+const SIG = {
+  H:{cls:"higher", word:"above", pill:"significantly above U.S."},
+  S:{cls:"same",   word:null,    pill:"not different from U.S."},
+  L:{cls:"lower",  word:"below", pill:"significantly below U.S."}
+};
+
+function headlineHTML(st){
+  const gap = st.s - NAT.score, gapAbs = Math.abs(gap);
+  const dir = gap>0?"above":gap<0?"below":"even with";
+  const sig = SIG[st.g];
+  let sentence;
+  if(st.g==="S"){
+    sentence = `<b>${esc(st.n)}</b> eighth&#8209;graders scored <b>${st.s}</b> in mathematics in 2024 &mdash; ${gapAbs} point${gapAbs!==1?"s":""} ${dir} the U.S. public&#8209;school average of ${NAT.score}, a gap small enough that it is <b>not statistically significant</b>.`;
+  } else {
+    sentence = `<b>${esc(st.n)}</b> eighth&#8209;graders scored <b>${st.s}</b> in mathematics in 2024 &mdash; ${gapAbs} point${gapAbs!==1?"s":""} ${sig.word} the U.S. public&#8209;school average of ${NAT.score}, a <b>statistically significant</b> difference.`;
+  }
+  const r = rankOf(st);
+  return `<p class="answer-state">${esc(st.n)} &middot; Grade 8 Mathematics &middot; 2024</p>
+    <p class="headline">${sentence} &nbsp;<span class="pill ${sig.cls}">${sig.pill}</span></p>
+    <p class="note-soft">That places ${esc(st.n)} <b>#${r} of 51</b> states and the District of Columbia. Tied scores share a rank.</p>`;
+}
+
+function statsHTML(st){
+  const d = st.s - NAT.score;
+  const cmp = d===0 ? "same as U.S." : `${Math.abs(d)} pts ${d>0?"above":"below"} U.S. (${NAT.score})`;
+  return `<div class="stats">
+    <div class="stat"><div class="k">Average scale score</div><div class="v">${st.s}</div>
+      <div class="c">${cmp}</div></div>
+    <div class="stat"><div class="k">At or above Proficient</div><div class="v">${st.p}%</div>
+      <div class="c">U.S. ${NAT.prof}%</div></div>
+    <div class="stat"><div class="k">At or above Basic</div><div class="v">${st.b}%</div>
+      <div class="c">U.S. ${NAT.basic}%</div></div>
+  </div>
+  <p class="note-soft">A note on language: NAEP <b>Proficient</b> signals strong command of challenging material &mdash; it is <b>not</b> the same as performing at grade level. Most coverage gets this wrong.</p>`;
+}
+
+function chartHTML(st, peers){
+  let items = [{n:"U.S. public", s:NAT.score, t:"nation"}, {n:st.n, s:st.s, t:"self"}];
+  peers.forEach(p=>items.push({n:p.n, s:p.s, t:"peer"}));
+  items.sort((a,b)=> b.s-a.s);
+  const scores = items.map(i=>i.s);
+  const lo = Math.floor((Math.min(...scores)-4)/2)*2;
+  const hi = Math.ceil((Math.max(...scores)+4)/2)*2;
+  const span = hi-lo;
+  const rows = items.map(i=>{
+    const w = ((i.s-lo)/span*100).toFixed(1);
+    const c = i.t==="self"?"self":i.t==="nation"?"nation":"";
+    return `<div class="bar-row">
+      <div class="bar-lab ${c}">${esc(i.n)}</div>
+      <div class="bar-track"><div class="bar-fill ${i.t}" style="width:${w}%"></div></div>
+      <div class="bar-val ${i.t==="self"?"self":""}">${i.s}</div>
+    </div>`;
+  }).join("");
+  return `<div class="chart">
+    <div class="axis-note">2024 average scale score &middot; scale ${lo}&ndash;${hi} (truncated; NAEP math scale is 0&ndash;500)</div>
+    ${rows}</div>`;
+}
+
+function peerHTML(st){
+  const peers = peersOf(st);
+  const peerAvg = mean(peers.map(p=>p.s));
+  const peerAvgR = Math.round(peerAvg);
+  const delta = st.s - peerAvg, dAbs = Math.abs(Math.round(delta));
+  const povs = peers.map(p=>p.pov).concat(st.pov);
+  const povLo = Math.min(...povs).toFixed(1), povHi = Math.max(...povs).toFixed(1);
+  const verdict = delta>=1.5 ? "ahead of" : delta<=-1.5 ? "behind" : "about even with";
+
+  let take;
+  if(st.g==="L" && delta>=1.5){
+    take = `<b>The fairer story:</b> ${esc(st.n)} sits below the nation overall, yet scores <b>${dAbs} points higher</b> than the average state facing similar economic conditions. Its gap looks less like underperformance and more like demography.`;
+  } else if(st.g==="H" && delta<=-1.5){
+    take = `<b>The fairer story:</b> ${esc(st.n)} is above the national average &mdash; but <b>${dAbs} points below</b> states with similarly low child poverty. Next to its economic peers, there's more room than the headline suggests.`;
+  } else if(delta<=-1.5){
+    take = `<b>The fairer story:</b> even beside states with similar economic conditions, ${esc(st.n)} trails the peer average by <b>${dAbs} points</b>.`;
+  } else if(delta>=1.5){
+    take = `<b>The fairer story:</b> ${esc(st.n)} beats the average of its economic peers by <b>${dAbs} points</b> &mdash; doing more from a similar starting point.`;
+  } else {
+    take = `<b>The fairer story:</b> ${esc(st.n)} lands within a couple of points of states with similar economic conditions &mdash; close to what its demographics would predict.`;
+  }
+
+  return `<p class="muted">Among the <b>${K} states whose child-poverty rate is closest to ${esc(st.n)}'s ${st.pov}%</b> (peers range ${povLo}%&ndash;${povHi}%), ${esc(st.n)}'s ${st.s} is ${verdict} the peer average of <b>${peerAvgR}</b>.</p>
+  ${chartHTML(st, peers)}
+  <div class="takeaway">${take}</div>`;
+}
+
+function trendHTML(){
+  const d19 = Math.abs(NAT.score - NAT.y2019);
+  return `<p>Zooming out: nationally, eighth&#8209;grade math (<b>${NAT.score}</b>) sits <b>${d19} points below</b> its 2019 pre&#8209;pandemic level of ${NAT.y2019}, and is statistically flat versus 2022 (${NAT.y2022}). Between 2022 and 2024, <b>no state scored higher</b> and only four scored lower &mdash; so "is it improving?" is, almost everywhere, still "not yet."</p>`;
+}
+
+function render(abbr){
+  const st = BY[abbr];
+  document.getElementById("state-select").value = abbr;
+  document.getElementById("card").innerHTML = `<div class="answer">
+    <div class="answer-head">${headlineHTML(st)}</div>
+    <div class="block"><h3>The numbers</h3>${statsHTML(st)}</div>
+    <div class="block"><h3>Compared with economically similar states</h3>${peerHTML(st)}</div>
+    <div class="block"><h3>The national backdrop</h3>${trendHTML()}</div>
+  </div>`;
+}
+
+// init
+(function(){
+  const sel = document.getElementById("state-select");
+  STATES.forEach(s=>{
+    const o = document.createElement("option");
+    o.value = s.a; o.textContent = s.n; sel.appendChild(o);
+  });
+  sel.addEventListener("change", e=>render(e.target.value));
+  document.querySelectorAll(".chip").forEach(c=>
+    c.addEventListener("click", ()=>render(c.dataset.st)));
+  render("MS");
+})();
+</script>
+</body>
+</html>

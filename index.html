@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Next Gen NAEP — Design Sprint Prototypes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F6F8; --card:#FFFFFF; --ink:#16213A; --slate:#566180;
+    --faint:#8A93A8; --line:#E4E8EF; --line-strong:#CFD6E2;
+    --blue:#2E5EAA; --blue-deep:#1B2A4A; --gold:#DBA02B;
+    --blue-wash:#F0F5FC;
+    --c-map:#2E5EAA; --c-route:#1F7A52; --c-create:#B4451F;
+    --serif:"Fraunces",Georgia,serif;
+    --sans:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px 90px;}
+
+  /* masthead */
+  .masthead{padding:56px 0 8px;}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--faint);margin:0;}
+  .eyebrow .st{color:var(--gold);}
+  .masthead h1{font-family:var(--serif);font-weight:500;
+    font-size:clamp(32px,6vw,52px);line-height:1.03;letter-spacing:-.018em;
+    margin:14px 0 0;max-width:15ch;}
+  .masthead .lede{font-size:17px;color:var(--slate);max-width:60ch;margin:18px 0 0;}
+
+  /* arc stepper */
+  .arc{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:28px;
+    padding:14px 18px;background:var(--card);border:1px solid var(--line);border-radius:8px;}
+  .arc-step{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--ink);
+    display:inline-flex;align-items:center;gap:7px;}
+  .arc-dot{width:8px;height:8px;border-radius:50%;}
+  .arc-arrow{color:var(--line-strong);font-size:14px;}
+  .arc .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--faint);margin-right:4px;}
+
+  /* tool cards */
+  .tools{margin-top:18px;display:flex;flex-direction:column;gap:14px;}
+  a.tool{display:flex;gap:18px;align-items:flex-start;text-decoration:none;color:inherit;
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);
+    border-radius:9px;padding:22px 24px;transition:transform .15s,box-shadow .15s,border-color .15s;}
+  a.tool:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(22,33,58,.09);}
+  .tool-num{font-family:var(--serif);font-size:34px;font-weight:500;color:var(--accent);
+    line-height:1;flex:none;width:42px;opacity:.9;}
+  .tool-body{flex:1;min-width:0;}
+  .tool-kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--accent);margin:0 0 4px;}
+  .tool-title{font-family:var(--serif);font-weight:500;font-size:22px;letter-spacing:-.01em;
+    margin:0;line-height:1.15;}
+  .tool-desc{font-size:14px;color:var(--slate);margin:9px 0 0;line-height:1.5;}
+  .tool-demo{font-size:13px;color:var(--ink);margin:10px 0 0;line-height:1.5;}
+  .tool-demo b{font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--faint);}
+  .tool-open{flex:none;align-self:center;font-family:var(--sans);font-weight:600;font-size:13px;
+    color:var(--accent);white-space:nowrap;}
+  .tool-open .ar{transition:transform .15s;display:inline-block;}
+  a.tool:hover .tool-open .ar{transform:translateX(3px);}
+
+  .fit{margin-top:26px;background:var(--blue-wash);border:1px solid #D5E3F4;border-radius:8px;
+    padding:18px 20px;font-size:14px;color:var(--ink);line-height:1.55;}
+  .fit b{color:var(--blue-deep);}
+
+  footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:11px;color:var(--faint);line-height:1.7;letter-spacing:.02em;}
+
+  @media (max-width:560px){
+    .wrap{padding:0 16px 60px;}
+    a.tool{gap:12px;padding:18px;}
+    .tool-num{font-size:26px;width:30px;}
+    .tool-open{display:none;}
+  }
+</style>
+</head>
+<body>
+<style>
+.sn{position:sticky;top:0;z-index:100;background:#16213A;border-bottom:1px solid rgba(255,255,255,.09);font-family:"Inter",system-ui,sans-serif;}
+.sn-in{max-width:1080px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.sn-brand{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;text-decoration:none;white-space:nowrap;}
+.sn-brand .st{color:#DBA02B;}
+.sn-links{display:flex;gap:3px;flex-wrap:wrap;}
+.sn-links a{font-size:13px;color:#AEB7C7;text-decoration:none;padding:5px 11px;border-radius:6px;transition:background .14s,color .14s;}
+.sn-links a:hover{color:#fff;background:rgba(255,255,255,.08);}
+.sn-links a.active{color:#16213A;background:#DBA02B;font-weight:600;}
+@media(max-width:560px){.sn-in{padding:9px 16px;}.sn-links a{padding:5px 9px;font-size:12.5px;}}
+</style>
+<nav class="sn"><div class="sn-in">
+<a class="sn-brand" href="index.html"><span class="st">★</span>&nbsp; Next Gen NAEP · Prototypes</a>
+<div class="sn-links">
+<a href="index.html" class="active" aria-current="page">Overview</a>
+<a href="landscape.html">Landscape</a>
+<a href="front-door.html">Front Door</a>
+<a href="answer-card.html">Answer Card</a>
+</div></div></nav>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow"><span class="st">★</span>&nbsp; Next Gen NAEP · Design Sprint Workshop 1</p>
+    <h1>Three prototypes for a more usable NAEP</h1>
+    <p class="lede">A small set of concept prototypes built for the design sprint, each probing a different layer of how people access, understand, and act on NAEP data &mdash; moving from diagnosing today's friction to proposing a genuinely new kind of NAEP output. Concept demos for discussion, not live NAEP products.</p>
+
+    <div class="arc">
+      <span class="lbl">The arc</span>
+      <span class="arc-step"><span class="arc-dot" style="background:var(--c-map)"></span>Map what exists</span>
+      <span class="arc-arrow">&rarr;</span>
+      <span class="arc-step"><span class="arc-dot" style="background:var(--c-route)"></span>Make it findable</span>
+      <span class="arc-arrow">&rarr;</span>
+      <span class="arc-step"><span class="arc-dot" style="background:var(--c-create)"></span>Make something new</span>
+    </div>
+  </header>
+
+  <section class="tools">
+
+    <a class="tool" href="landscape.html" style="--accent:var(--c-map)">
+      <div class="tool-num">01</div>
+      <div class="tool-body">
+        <p class="tool-kicker">The map</p>
+        <h2 class="tool-title">The NAEP Output Landscape</h2>
+        <p class="tool-desc">Everything NAEP publishes today &mdash; report cards, data tools, released items, microdata, special studies &mdash; grouped into seven families and mapped to the six audiences who actually use them.</p>
+        <p class="tool-demo"><b>Demonstrates</b> &nbsp;Where access breaks down: a who-uses-what matrix shows a couple of headline products carrying everyone while microdata and methods reach almost no one.</p>
+      </div>
+      <div class="tool-open">Open <span class="ar">&rarr;</span></div>
+    </a>
+
+    <a class="tool" href="front-door.html" style="--accent:var(--c-route)">
+      <div class="tool-num">02</div>
+      <div class="tool-body">
+        <p class="tool-kicker">Findability</p>
+        <h2 class="tool-title">The Question-First Front Door</h2>
+        <p class="tool-desc">A single entry point where you describe what you want to know in plain language; it reads your intent and routes you to the right existing NAEP resource &mdash; silently spanning both of today's separate websites.</p>
+        <p class="tool-demo"><b>Demonstrates</b> &nbsp;Reorganizing around the user's question instead of NAEP's filing system. It routes &mdash; but doesn't yet create anything new.</p>
+      </div>
+      <div class="tool-open">Open <span class="ar">&rarr;</span></div>
+    </a>
+
+    <a class="tool" href="answer-card.html" style="--accent:var(--c-create)">
+      <div class="tool-num">03</div>
+      <div class="tool-body">
+        <p class="tool-kicker">A new resource</p>
+        <h2 class="tool-title">The Synthesized Answer Card</h2>
+        <p class="tool-desc">Pick a state and get a plain-language, significance-aware read on its 8th-grade math results &mdash; plus a comparison to economically similar states that NAEP doesn't offer today, built from real released data.</p>
+        <p class="tool-demo"><b>Demonstrates</b> &nbsp;Going past routing to generate a fair, synthesized answer &mdash; the rung where NAEP starts producing something new rather than pointing at a chart.</p>
+      </div>
+      <div class="tool-open">Open <span class="ar">&rarr;</span></div>
+    </a>
+
+  </section>
+
+  <div class="fit">
+    <b>How they fit together.</b> Each prototype is the next rung up. The <b>Landscape</b> diagnoses the problem &mdash; NAEP's outputs are organized around how they're produced, and the most powerful ones reach the fewest people. The <b>Front Door</b> tackles findability by letting people start from their question. The <b>Answer Card</b> goes furthest, turning real data into a synthesized, demographically-fair answer &mdash; which raises the sharpest question for the sprint: how far past pure description is NAEP willing to go?
+  </div>
+
+  <footer>
+    Concept prototypes for the Next Gen NAEP Design Sprint &mdash; not live NAEP products. Data shown in the Answer Card is real: NAEP 2024 Mathematics, Grade 8 (NCES / The Nation's Report Card) and child poverty from the U.S. Census Bureau, ACS 1-Year, 2023. Built June 2026.
+  </footer>
+
+</div>
+</body>
+</html>
