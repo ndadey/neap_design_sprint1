@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>State Leader Console — Concept Prototype · Next Gen NAEP</title>
+<style>
+/* shared site nav */
+body{margin:0;background:#EEF1F3;}
+.sn{position:sticky;top:0;z-index:100;background:#16213A;border-bottom:1px solid rgba(255,255,255,.09);font-family:"Inter",system-ui,sans-serif;}
+.sn-in{max-width:1180px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.sn-brand{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;text-decoration:none;white-space:nowrap;}
+.sn-brand .st{color:#DBA02B;}
+.sn-links{display:flex;gap:3px;flex-wrap:wrap;}
+.sn-links a{font-size:13px;color:#AEB7C7;text-decoration:none;padding:5px 11px;border-radius:6px;transition:background .14s,color .14s;}
+.sn-links a:hover{color:#fff;background:rgba(255,255,255,.08);}
+.sn-links a.active{color:#16213A;background:#DBA02B;font-weight:600;}
+@media(max-width:560px){.sn-in{padding:9px 16px;}.sn-links a{padding:5px 9px;font-size:12.5px;}}
+</style>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+.slc{
+  --paper:#EEF1F3; --surface:#FFFFFF; --ink:#18222E; --ink-soft:#54636F;
+  --line:#DCE2E5; --line-soft:#E8ECEE;
+  --teal:#0E5A63; --teal-deep:#08383D; --teal-mid:#5E9395;
+  --amber:#B26B12; --amber-soft:#E8C892; --amber-tint:#F6ECDA;
+  --brick:#8C3B2E; --brick-tint:#F2E2DE;
+  --band0:#E6EBED; --band1:#C2D2D3; --band2:#7FA9AA; --band3:#2F6E72;
+  font-family:'IBM Plex Sans',system-ui,sans-serif; color:var(--ink);
+  background:var(--paper); min-height:100vh; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.slc *{box-sizing:border-box;}
+.slc-mono{font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums;}
+.slc-disp{font-family:'Space Grotesk',sans-serif;}
+
+.slc-shell{max-width:1180px; margin:0 auto; padding:0 22px 80px;}
+
+/* header */
+.slc-top{display:flex; align-items:center; justify-content:space-between; gap:20px;
+  padding:18px 0 16px; border-bottom:1px solid var(--line); flex-wrap:wrap;}
+.slc-brand{display:flex; align-items:baseline; gap:12px;}
+.slc-mark{font-family:'Space Grotesk'; font-weight:700; letter-spacing:-0.02em; font-size:18px; color:var(--teal-deep);}
+.slc-mark b{color:var(--amber);}
+.slc-sub{font-size:12px; color:var(--ink-soft); letter-spacing:0.04em; text-transform:uppercase;}
+.slc-controls{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+.slc-field{display:flex; flex-direction:column; gap:3px;}
+.slc-field label{font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-soft);}
+.slc-field select{font-family:'IBM Plex Sans'; font-size:13px; color:var(--ink); background:var(--surface);
+  border:1px solid var(--line); border-radius:7px; padding:7px 10px; min-width:140px; cursor:pointer;}
+.slc-field select:focus-visible{outline:2px solid var(--teal); outline-offset:1px;}
+.slc-tag{font-family:'IBM Plex Mono'; font-size:10px; letter-spacing:0.06em; color:var(--amber);
+  background:var(--amber-tint); border:1px solid var(--amber-soft); border-radius:20px; padding:4px 10px; align-self:center;}
+
+/* question switch */
+.slc-qbar{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:24px 0 26px;}
+.slc-q{position:relative; text-align:left; background:var(--surface); border:1px solid var(--line);
+  border-radius:14px; padding:18px 20px; cursor:pointer; transition:border-color .18s, box-shadow .18s, transform .18s; font:inherit; color:inherit; width:100%;}
+.slc-q:hover{transform:translateY(-2px); box-shadow:0 8px 22px -16px rgba(8,56,61,.55);}
+.slc-q:focus-visible{outline:2px solid var(--teal); outline-offset:2px;}
+.slc-q[data-on="true"]{border-color:var(--teal); box-shadow:0 0 0 1px var(--teal) inset;}
+.slc-q .qn{font-family:'IBM Plex Mono'; font-size:11px; letter-spacing:0.1em; color:var(--ink-soft); text-transform:uppercase;}
+.slc-q .qt{font-family:'Space Grotesk'; font-weight:600; font-size:18px; letter-spacing:-0.01em; margin:6px 0 4px; line-height:1.25;}
+.slc-q .qd{font-size:13px; color:var(--ink-soft);}
+.slc-q .qarrow{position:absolute; top:18px; right:18px; color:var(--line); transition:color .18s, transform .18s;}
+.slc-q[data-on="true"] .qarrow{color:var(--teal); transform:translate(2px,-2px);}
+
+/* generic card */
+.slc-card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px;}
+.slc-eyebrow{font-family:'IBM Plex Mono'; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--teal); margin-bottom:6px;}
+.slc-h{font-family:'Space Grotesk'; font-weight:600; font-size:22px; letter-spacing:-0.015em; line-height:1.2; margin:0 0 4px;}
+.slc-lead{font-size:14px; color:var(--ink-soft); max-width:62ch;}
+
+/* source chips */
+.slc-src{display:inline-flex; align-items:center; gap:5px; font-family:'IBM Plex Mono'; font-size:10px;
+  letter-spacing:0.04em; padding:2px 7px; border-radius:5px; border:1px solid var(--line); color:var(--ink-soft); background:var(--paper);}
+.slc-src .dot{width:6px; height:6px; border-radius:50%;}
+.dot-naep{background:var(--teal);}
+.dot-state{background:var(--amber);}
+.dot-map{background:#6E5BA6;}
+
+/* sig badge */
+.slc-sig{display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:500;}
+.slc-sig .ic{display:inline-flex;}
+.sig-up{color:var(--teal-deep);}
+.sig-down{color:var(--brick);}
+.sig-flat{color:var(--ink-soft);}
+.slc-sig.ns{color:var(--ink-soft); font-style:italic;}
+
+/* fade in */
+.slc-view{animation:slcfade .28s ease both;}
+@keyframes slcfade{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+
+/* ---- Q1 layout ---- */
+.q1-grid{display:grid; grid-template-columns:1.55fr 1fr; gap:18px; align-items:start;}
+.q1-ruler-wrap{margin-top:14px;}
+.q1-sgsel{display:flex; gap:7px; flex-wrap:wrap; margin-top:14px;}
+.q1-sgsel button{font-family:'IBM Plex Sans'; font-size:12.5px; color:var(--ink-soft); background:var(--paper);
+  border:1px solid var(--line); border-radius:20px; padding:6px 13px; cursor:pointer; transition:.15s; display:inline-flex; align-items:center; gap:6px;}
+.q1-sgsel button[data-on="true"]{background:var(--teal); color:#fff; border-color:var(--teal);}
+.q1-sgsel button:focus-visible{outline:2px solid var(--teal); outline-offset:2px;}
+
+.q1-read{display:flex; gap:26px; margin-top:18px; flex-wrap:wrap;}
+.q1-read .blk{flex:1; min-width:150px;}
+.q1-read .lab{font-size:11px; letter-spacing:0.05em; text-transform:uppercase; color:var(--ink-soft); display:flex; gap:7px; align-items:center; margin-bottom:6px;}
+.q1-read .big{font-family:'IBM Plex Mono'; font-weight:600; font-size:30px; letter-spacing:-0.01em;}
+.q1-read .big.state{color:var(--amber);}
+.q1-read .big.naep{color:var(--teal-deep);}
+.q1-read .note{font-size:12px; color:var(--ink-soft); margin-top:3px;}
+
+.q1-verdict{margin-top:18px; padding:14px 16px; border-left:3px solid var(--amber); background:var(--amber-tint); border-radius:0 10px 10px 0; font-size:13.5px;}
+.q1-verdict b{font-weight:600;}
+
+/* caveat */
+.slc-caveat{background:#F3F1F8; border:1px solid #DAD2EC; border-radius:12px; padding:16px 18px;}
+.slc-caveat .ct{font-family:'Space Grotesk'; font-weight:600; font-size:13px; color:#4A3C72; display:flex; gap:8px; align-items:center; margin-bottom:7px;}
+.slc-caveat p{font-size:12.5px; color:#4A4458; margin:0 0 8px;}
+.slc-caveat p:last-child{margin-bottom:0;}
+
+/* options */
+.q1-opts{margin-top:16px; display:flex; flex-direction:column; gap:9px;}
+.q1-opt{display:flex; gap:12px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; background:var(--surface);}
+.q1-opt .ord{font-family:'IBM Plex Mono'; font-size:12px; color:var(--teal); font-weight:600; padding-top:1px;}
+.q1-opt .ti{font-weight:600; font-size:13.5px;}
+.q1-opt .de{font-size:12.5px; color:var(--ink-soft);}
+
+/* trend mini */
+.q1-trend{margin-top:18px;}
+.q1-trend .tl{font-size:11px; letter-spacing:0.05em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px;}
+
+/* ---- Q2 triage ---- */
+.q2-head{display:flex; justify-content:space-between; align-items:flex-end; gap:18px; flex-wrap:wrap;}
+.q2-legend{display:flex; gap:16px; font-size:11.5px; color:var(--ink-soft); flex-wrap:wrap;}
+.q2-legend span{display:inline-flex; align-items:center; gap:6px;}
+.q2-pri{width:9px; height:9px; border-radius:2px; display:inline-block;}
+.pri-high{background:var(--brick);}
+.pri-watch{background:var(--amber);}
+.pri-stable{background:var(--teal-mid);}
+
+.q2-table{margin-top:16px; border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+.q2-row{display:grid; grid-template-columns:1.5fr 1fr 1fr 1.3fr 0.9fr; gap:0; border-top:1px solid var(--line-soft);}
+.q2-row.head{background:var(--paper); border-top:none;}
+.q2-row.head div{font-family:'IBM Plex Mono'; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-soft); padding:11px 14px;}
+.q2-cell{padding:14px; border-left:1px solid var(--line-soft); display:flex; flex-direction:column; gap:3px; justify-content:center;}
+.q2-cell:first-child{border-left:none;}
+.q2-row[data-pri="high"]{box-shadow:inset 4px 0 0 var(--brick);}
+.q2-row[data-pri="watch"]{box-shadow:inset 4px 0 0 var(--amber);}
+.q2-row[data-pri="stable"]{box-shadow:inset 4px 0 0 var(--teal-mid);}
+.q2-sg{font-weight:600; font-size:14px; display:flex; align-items:center; gap:8px;}
+.q2-sg .ico{color:var(--teal);}
+.q2-metric{font-family:'IBM Plex Mono'; font-size:14px; font-weight:600;}
+.q2-sub{font-size:11.5px; color:var(--ink-soft);}
+.q2-prilab{font-family:'Space Grotesk'; font-weight:600; font-size:12.5px; letter-spacing:0.02em;}
+.q2-prilab[data-p="high"]{color:var(--brick);}
+.q2-prilab[data-p="watch"]{color:var(--amber);}
+.q2-prilab[data-p="stable"]{color:var(--teal-deep);}
+.q2-focus{font-size:11px; color:var(--ink-soft); margin-top:2px;}
+.q2-supp{color:var(--ink-soft); font-style:italic; font-size:12.5px; display:inline-flex; gap:6px; align-items:center;}
+
+.q2-why{margin-top:16px; font-size:13px; color:var(--ink-soft); background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:14px 16px;}
+.q2-why b{color:var(--ink); font-weight:600;}
+
+.slc-foot{margin-top:26px; font-size:12px; color:var(--ink-soft); display:flex; gap:18px; flex-wrap:wrap; align-items:center;}
+.slc-foot .srcrow{display:flex; gap:12px; flex-wrap:wrap;}
+
+@media (max-width:880px){
+  .slc-qbar{grid-template-columns:1fr;}
+  .q1-grid{grid-template-columns:1fr;}
+  .q2-row{grid-template-columns:1.4fr 1fr 1.2fr;}
+  .q2-row .hideSm{display:none;}
+}
+@media (prefers-reduced-motion: reduce){
+  .slc-view{animation:none;} .slc-q{transition:none;}
+}
+</style>
+</head>
+<body>
+
+<nav class="sn"><div class="sn-in">
+<a class="sn-brand" href="index.html"><span class="st">★</span>&nbsp; Next Gen NAEP · Prototypes</a>
+<div class="sn-links">
+<a href="index.html">Overview</a>
+<a href="landscape.html">Landscape</a>
+<a href="front-door.html">Front Door</a>
+<a href="answer-card.html">Answer Card</a>
+<a href="state-console.html" class="active" aria-current="page">State Console</a>
+</div></div></nav>
+
+<div id="root"></div>
+
+<script>
+/* =============================================================================
+   Next Gen NAEP — State Leader Console (illustrative prototype)
+   Faithful static port of the uploaded React design.
+   National anchors use real 2024 NAEP (National Public) figures;
+   state-level values are illustrative.
+============================================================================= */
+
+/* ---------- inline icons (Lucide paths) ---------- */
+function icon(name, size, cls){
+  const s = size || 16;
+  const open = '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"'+(cls?' class="'+cls+'"':'')+'>';
+  const P = {
+    info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+    arrowUpRight:'<path d="M7 7h10v10"/><path d="M7 17 17 7"/>',
+    arrowDownRight:'<path d="m7 7 10 10"/><path d="M17 7v10H7"/>',
+    minus:'<path d="M5 12h14"/>',
+    alert:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+    book:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+    calc:'<rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/>',
+    chevronRight:'<path d="m9 18 6-6-6-6"/>'
+  };
+  return open + (P[name]||'') + '</svg>';
+}
+function sgIcon(type, size){ return icon(type === 'book' ? 'book' : 'calc', size); }
+
+/* ----------------------------- DATA ----------------------------- */
+/* Real 2024 NAEP achievement-level cut scores + national % at/above Proficient.
+   National anchors aligned to National Public (the state-comparison reference):
+   g8 math 272 / 27%, g8 reading 257 / 29%. */
+const SG = {
+  g4read: { label:"Grade 4 Reading", icon:"book", domain:[180,270], cuts:{basic:208,prof:238,adv:268}, natAvg:215, natProf:31 },
+  g8read: { label:"Grade 8 Reading", icon:"book", domain:[220,320], cuts:{basic:243,prof:281,adv:323}, natAvg:257, natProf:29 },
+  g4math: { label:"Grade 4 Math",    icon:"calc", domain:[190,290], cuts:{basic:214,prof:249,adv:282}, natAvg:237, natProf:39 },
+  g8math: { label:"Grade 8 Math",    icon:"calc", domain:[240,340], cuts:{basic:262,prof:299,adv:333}, natAvg:272, natProf:27 },
+};
+const SG_KEYS = Object.keys(SG);
+
+/* Illustrative states across the rigor spectrum. mapped = NAEP-scale equivalent of the
+   state's OWN "proficient" cut (the NCES mapping figure). stateProf = % the state reports
+   proficient on its own test. naepProf = % the state hits NAEP Proficient. naepAvg = state NAEP mean. */
+const STATES = {
+  Atwater: { name:"Atwater", rigor:"low",
+    sg:{ g4read:{mapped:206,stateProf:74,naepProf:29,naepAvg:213}, g8read:{mapped:241,stateProf:71,naepProf:28,naepAvg:255},
+         g4math:{mapped:213,stateProf:78,naepProf:37,naepAvg:235}, g8math:{mapped:261,stateProf:69,naepProf:26,naepAvg:271} } },
+  Bellweather: { name:"Bellweather", rigor:"mid",
+    sg:{ g4read:{mapped:223,stateProf:55,naepProf:33,naepAvg:217}, g8read:{mapped:262,stateProf:52,naepProf:31,naepAvg:259},
+         g4math:{mapped:231,stateProf:58,naepProf:41,naepAvg:240}, g8math:{mapped:280,stateProf:48,naepProf:29,naepAvg:275} } },
+  Cascade: { name:"Cascade", rigor:"high",
+    sg:{ g4read:{mapped:236,stateProf:39,naepProf:36,naepAvg:221}, g8read:{mapped:279,stateProf:36,naepProf:34,naepAvg:263},
+         g4math:{mapped:247,stateProf:43,naepProf:44,naepAvg:244}, g8math:{mapped:297,stateProf:33,naepProf:33,naepAvg:279} } },
+};
+const STATE_KEYS = Object.keys(STATES);
+
+/* Q2 triage signals per state. Standing / Trajectory / Equity (each with significance)
+   synthesize into a priority + focus. Grounded in real 2024 national patterns; state values illustrative. */
+const TRIAGE = {
+  Atwater: {
+    g4read:{ stand:{v:-4,sig:true}, traj:{dir:"down",v:-3,sig:true}, equity:{label:"Bottom decile −9 since '19",sig:true,supp:false}, pri:"high",  focus:"Early literacy" },
+    g8read:{ stand:{v:-2,sig:true}, traj:{dir:"down",v:-2,sig:false}, equity:{label:"Below-Basic at record high",sig:true,supp:false}, pri:"high",  focus:"Adolescent literacy" },
+    g4math:{ stand:{v:-2,sig:false}, traj:{dir:"up",v:3,sig:true},    equity:{label:"Top quartile drives gain",sig:true,supp:false}, pri:"watch", focus:"Protect & broaden gains" },
+    g8math:{ stand:{v:-2,sig:true}, traj:{dir:"flat",v:0,sig:false},  equity:{label:"Income gap +5 since '19",sig:true,supp:false}, pri:"high",  focus:"Math recovery (middle grades)" },
+  },
+  Bellweather: {
+    g4read:{ stand:{v:2,sig:true},  traj:{dir:"flat",v:-1,sig:false}, equity:{label:"EL gap stable",sig:false,supp:false}, pri:"watch", focus:"Sustain, monitor lowest readers" },
+    g8read:{ stand:{v:1,sig:false}, traj:{dir:"down",v:-2,sig:true},  equity:{label:"Bottom quartile slipping",sig:true,supp:false}, pri:"watch", focus:"Adolescent literacy" },
+    g4math:{ stand:{v:2,sig:true},  traj:{dir:"up",v:4,sig:true},     equity:{label:"Gains across quartiles",sig:true,supp:false}, pri:"stable",focus:"Stay the course" },
+    g8math:{ stand:{v:0,sig:false}, traj:{dir:"flat",v:0,sig:false},  equity:{label:"Rural subgroup — too few tested",sig:false,supp:true}, pri:"watch", focus:"Math recovery (middle grades)" },
+  },
+  Cascade: {
+    g4read:{ stand:{v:5,sig:true},  traj:{dir:"flat",v:-1,sig:false}, equity:{label:"Gap narrowed since '22",sig:true,supp:false}, pri:"stable",focus:"Stay the course" },
+    g8read:{ stand:{v:4,sig:true},  traj:{dir:"down",v:-2,sig:true},  equity:{label:"Bottom decile −5",sig:true,supp:false}, pri:"watch", focus:"Adolescent literacy" },
+    g4math:{ stand:{v:5,sig:true},  traj:{dir:"up",v:5,sig:true},     equity:{label:"Broad-based gains",sig:true,supp:false}, pri:"stable",focus:"Stay the course" },
+    g8math:{ stand:{v:5,sig:true},  traj:{dir:"flat",v:1,sig:false},  equity:{label:"Income gap persists",sig:true,supp:false}, pri:"watch", focus:"Math recovery (middle grades)" },
+  },
+};
+
+/* ----------------------------- small pieces ----------------------------- */
+function sourceChip(kind){
+  const map = { naep:["dot-naep","NAEP API"], state:["dot-state","State report card"], map:["dot-map","NCES mapping"] };
+  const m = map[kind];
+  return '<span class="slc-src"><span class="dot '+m[0]+'"></span>'+m[1]+'</span>';
+}
+function sigBadge(dir, value, sig, suffix){
+  suffix = suffix || " pts";
+  if(!sig) return '<span class="slc-sig ns">no significant change</span>';
+  if(dir === "up")   return '<span class="slc-sig sig-up"><span class="ic">'+icon('arrowUpRight',14)+'</span>+'+Math.abs(value)+suffix+' · significant</span>';
+  if(dir === "down") return '<span class="slc-sig sig-down"><span class="ic">'+icon('arrowDownRight',14)+'</span>−'+Math.abs(value)+suffix+' · significant</span>';
+  return '<span class="slc-sig sig-flat"><span class="ic">'+icon('minus',14)+'</span>flat</span>';
+}
+
+/* --------------------- the NAEP scale ruler (Q1 signature) --------------------- */
+function scaleRuler(sg, state, mappedVal, peers){
+  const W=1000, H=178, padL=24, padR=24, axisY=118, bandTop=44, bandH=56;
+  const lo=sg.domain[0], hi=sg.domain[1];
+  const x = (s)=> padL + ((s-lo)/(hi-lo))*(W-padL-padR);
+  const cuts=sg.cuts, mapped=mappedVal, pr=peers||[];
+  const bands=[
+    {from:lo,to:cuts.basic,fill:"var(--band0)",name:"Below NAEP Basic"},
+    {from:cuts.basic,to:cuts.prof,fill:"var(--band1)",name:"NAEP Basic"},
+    {from:cuts.prof,to:cuts.adv,fill:"var(--band2)",name:"NAEP Proficient"},
+    {from:cuts.adv,to:hi,fill:"var(--band3)",name:"NAEP Advanced"},
+  ];
+  let s = '<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="NAEP scale showing where the state\'s proficient bar maps relative to NAEP achievement levels for '+sg.label+'">';
+  // bands
+  bands.forEach(function(b,i){
+    const w=Math.max(0, x(b.to)-x(b.from));
+    const cx=(x(b.from)+x(b.to))/2;
+    const fill = i>=2 ? "#fff" : "#3C4A50";
+    const label = (x(b.to)-x(b.from))>90 ? b.name : "";
+    s += '<g><rect x="'+x(b.from)+'" y="'+bandTop+'" width="'+w+'" height="'+bandH+'" fill="'+b.fill+'"/>'
+      + '<text x="'+cx+'" y="'+(bandTop+bandH/2+4)+'" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="'+fill+'" opacity="0.92" style="letter-spacing:0.02em">'+label+'</text></g>';
+  });
+  // axis
+  s += '<line x1="'+padL+'" y1="'+axisY+'" x2="'+(W-padR)+'" y2="'+axisY+'" stroke="var(--line)" stroke-width="1.5"/>';
+  // cut ticks
+  Object.keys(cuts).forEach(function(k){
+    const v=cuts[k];
+    s += '<g><line x1="'+x(v)+'" y1="'+bandTop+'" x2="'+x(v)+'" y2="'+(axisY+6)+'" stroke="#9AA9AF" stroke-width="1" stroke-dasharray="2 3"/>'
+      + '<text x="'+x(v)+'" y="'+(axisY+22)+'" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="var(--ink-soft)">'+v+'</text></g>';
+  });
+  // peers
+  pr.forEach(function(p){
+    s += '<g><line x1="'+x(p.v)+'" y1="'+(bandTop-8)+'" x2="'+x(p.v)+'" y2="'+bandTop+'" stroke="var(--ink-soft)" stroke-width="1.5"/>'
+      + '<circle cx="'+x(p.v)+'" cy="'+(bandTop-11)+'" r="2.4" fill="var(--ink-soft)"/></g>';
+  });
+  // nation marker
+  s += '<g><line x1="'+x(sg.natAvg)+'" y1="'+axisY+'" x2="'+x(sg.natAvg)+'" y2="'+(axisY-26)+'" stroke="var(--teal-deep)" stroke-width="2"/>'
+    + '<circle cx="'+x(sg.natAvg)+'" cy="'+(axisY-26)+'" r="4" fill="var(--teal-deep)"/>'
+    + '<text x="'+x(sg.natAvg)+'" y="'+(axisY-34)+'" text-anchor="middle" font-family="Space Grotesk" font-weight="600" font-size="11.5" fill="var(--teal-deep)">Nation avg '+sg.natAvg+'</text></g>';
+  // the state's proficient cut, mapped onto the NAEP scale (headline marker)
+  s += '<g><line x1="'+x(mapped)+'" y1="'+(bandTop-26)+'" x2="'+x(mapped)+'" y2="'+axisY+'" stroke="var(--amber)" stroke-width="3"/>'
+    + '<polygon points="'+x(mapped)+','+(bandTop-26)+' '+(x(mapped)-6)+','+(bandTop-36)+' '+(x(mapped)+6)+','+(bandTop-36)+'" fill="var(--amber)"/>'
+    + '<text x="'+x(mapped)+'" y="'+(bandTop-42)+'" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="12.5" fill="var(--amber)">'+state.name+': \u201Cproficient\u201D = '+mapped+'</text></g>';
+  s += '</svg>';
+  return s;
+}
+
+/* --------------------------- Decision 1 view --------------------------- */
+function rigorView(stateKey, sgKey){
+  const sg=SG[sgKey], state=STATES[stateKey], d=state.sg[sgKey];
+  const land = d.mapped < sg.cuts.basic ? "below NAEP Basic"
+    : d.mapped < sg.cuts.prof ? "in the NAEP Basic range"
+    : d.mapped < sg.cuts.adv ? "in the NAEP Proficient range" : "in the NAEP Advanced range";
+  const gap = d.stateProf - d.naepProf;
+  const peers = STATE_KEYS.filter(function(k){return k!==stateKey;}).map(function(k){ return {v:STATES[k].sg[sgKey].mapped, name:STATES[k].name}; });
+  const tabs = SG_KEYS.map(function(k){
+    return '<button role="tab" aria-selected="'+(k===sgKey)+'" data-on="'+(k===sgKey)+'" data-sg="'+k+'">'+sgIcon(SG[k].icon,13)+' '+SG[k].label+'</button>';
+  }).join('');
+
+  const verdictTail = d.mapped < sg.cuts.prof
+    ? ' Students cleared as \u201Cproficient\u201D at home would, on average, not reach NAEP Proficient \u2014 they sit roughly '+(sg.cuts.prof - d.mapped)+' scale points lower.'
+    : ' The state\u2019s bar is aligned at or above NAEP\u2019s Proficient benchmark.';
+
+  return ''
+  + '<div class="slc-view"><div class="slc-card">'
+  +   '<div class="slc-eyebrow">Decision 1 · Standard rigor</div>'
+  +   '<h2 class="slc-h">Where does '+state.name+'\u2019s \u201Cproficient\u201D bar sit on the NAEP scale?</h2>'
+  +   '<p class="slc-lead">A state\u2019s own proficiency cut, placed on the common NAEP scale, shows the <em>rigor</em> of the promise behind the word \u201Cproficient\u201D \u2014 and how it compares to NAEP\u2019s benchmarks and to other states.</p>'
+  +   '<div class="q1-sgsel" role="tablist" aria-label="Subject and grade">'+tabs+'</div>'
+  +   '<div class="q1-ruler-wrap">'+scaleRuler(sg,state,d.mapped,peers)+'</div>'
+  +   '<div class="q1-verdict">'+state.name+'\u2019s standard for \u201Cproficient\u201D maps to a NAEP-equivalent score of <b class="slc-mono">'+d.mapped+'</b>, which falls <b>'+land+'</b>. NAEP\u2019s own Proficient line is at <b class="slc-mono">'+sg.cuts.prof+'</b>.'+verdictTail+'</div>'
+  +   '<div class="q1-grid" style="margin-top:22px;">'
+  +     '<div>'
+  +       '<div class="q1-read">'
+  +         '<div class="blk"><div class="lab">'+sourceChip('state')+'</div><div class="big state">'+d.stateProf+'%</div><div class="note">called proficient on the state\u2019s own test</div></div>'
+  +         '<div class="blk"><div class="lab">'+sourceChip('naep')+'</div><div class="big naep">'+d.naepProf+'%</div><div class="note">at or above NAEP Proficient</div></div>'
+  +         '<div class="blk"><div class="lab">Headline \u201Cgap\u201D</div><div class="big">'+(gap>0?'+':'')+gap+'<span style="font-size:16px;">pts</span></div><div class="note">two different rulers \u2014 read with care \u2192</div></div>'
+  +       '</div>'
+  +       '<div class="q1-trend"><div class="tl">Calibration options \u2014 the decision is yours to weigh</div>'
+  +         '<div class="q1-opts">'
+  +           '<div class="q1-opt"><div class="ord">A</div><div><div class="ti">Hold the current standard</div><div class="de">Preserves trend comparability and local trust; leaves the rigor gap with NAEP in place.</div></div></div>'
+  +           '<div class="q1-opt"><div class="ord">B</div><div><div class="ti">Recalibrate toward a NAEP-referenced bar</div><div class="de">Raises the cut so \u201Cproficient\u201D signals readiness more honestly; expect reported rates to fall and public questions in year one.</div></div></div>'
+  +           '<div class="q1-opt"><div class="ord">C</div><div><div class="ti">Phase in over 2\u20133 cycles with a bridge report</div><div class="de">Stages the shift and shows old and new rates side by side to manage the optics of a one-time drop.</div></div></div>'
+  +         '</div>'
+  +       '</div>'
+  +     '</div>'
+  +     '<div>'
+  +       '<div class="slc-caveat">'
+  +         '<div class="ct">'+icon('info',15)+' What NAEP Proficient is \u2014 and isn\u2019t</div>'
+  +         '<p>NAEP Proficient is an <b>aspirational, challenging-material benchmark</b>, not a \u201Cgrade-level\u201D line. NCES states plainly that it <b>does not represent grade-level proficiency</b> as defined by state or district assessments, and that achievement levels are used on a trial basis and should be interpreted with caution.</p>'
+  +         '<p>So the honest read here is <b>relative rigor</b> \u2014 where a state\u2019s bar sits on a shared ruler \u2014 not \u201Cthe state is overstating by '+(gap>0?gap:0)+' points.\u201D The subtraction compares two different constructs.</p>'
+  +         '<p style="font-size:11.5px; opacity:0.85;">Rigor placement uses the NCES <em>Mapping State Proficiency Standards onto the NAEP Scales</em> method. '+sourceChip('map')+'</p>'
+  +       '</div>'
+  +       '<div style="margin-top:12px; font-size:12px; color:var(--ink-soft);"><strong style="color:var(--ink);">DUV(S) note.</strong> This is a <em>Decision</em> resting on a <em>Value</em> (what should \u201Cproficient\u201D promise families?) and an <em>Uncertainty</em> (how to interpret NAEP\u2019s levels). Surface all three before choosing.</div>'
+  +     '</div>'
+  +   '</div>'
+  + '</div></div>';
+}
+
+/* --------------------------- Decision 2 view --------------------------- */
+function focusView(stateKey){
+  const state=STATES[stateKey], tri=TRIAGE[stateKey];
+  const order=["g4read","g8read","g4math","g8math"];
+  const priRank={high:0,watch:1,stable:2};
+  const rows=order.slice().sort(function(a,b){return priRank[tri[a].pri]-priRank[tri[b].pri];});
+  const priLabel={high:"Focus now",watch:"Watch",stable:"Stable"};
+
+  const rowsHtml = rows.map(function(k){
+    const t=tri[k], sg=SG[k];
+    const standColor = t.stand.v < 0 ? "var(--brick)" : "var(--teal-deep)";
+    const equityCell = t.equity.supp
+      ? '<span class="q2-supp">'+icon('alert',13)+' \u2021 too few tested to report</span>'
+      : '<div style="font-size:13px;">'+t.equity.label+'</div><div class="q2-sub">'+(t.equity.sig?'significant':'not significant')+'</div>';
+    return '<div class="q2-row" data-pri="'+t.pri+'">'
+      + '<div class="q2-cell"><div class="q2-sg"><span class="ico">'+sgIcon(sg.icon,15)+'</span>'+sg.label+'</div><div class="q2-sub">'+sg.natProf+'% proficient nationally</div></div>'
+      + '<div class="q2-cell"><div class="q2-metric" style="color:'+standColor+';">'+(t.stand.v>0?'+':'')+t.stand.v+' pts</div><div class="q2-sub">'+(t.stand.sig?'significant difference':'not significant')+'</div></div>'
+      + '<div class="q2-cell hideSm">'+sigBadge(t.traj.dir,t.traj.v,t.traj.sig)+'<div class="q2-sub">since 2022</div></div>'
+      + '<div class="q2-cell">'+equityCell+'</div>'
+      + '<div class="q2-cell"><span class="q2-prilab" data-p="'+t.pri+'">'+priLabel[t.pri]+'</span><span class="q2-focus">'+t.focus+'</span></div>'
+      + '</div>';
+  }).join('');
+
+  return ''
+  + '<div class="slc-view"><div class="slc-card">'
+  +   '<div class="q2-head">'
+  +     '<div><div class="slc-eyebrow">Decision 2 · Where to direct initiatives &amp; funding</div>'
+  +       '<h2 class="slc-h">'+state.name+': three signals, one priority per subject &amp; grade</h2>'
+  +       '<p class="slc-lead">Standing (vs. nation), trajectory (recent change), and the distribution beneath the average each carry a significance test. Fused, they point to where a statewide push would do the most.</p></div>'
+  +     '<div class="q2-legend"><span><i class="q2-pri pri-high"></i> Focus now</span><span><i class="q2-pri pri-watch"></i> Watch</span><span><i class="q2-pri pri-stable"></i> Stable</span></div>'
+  +   '</div>'
+  +   '<div class="q2-table">'
+  +     '<div class="q2-row head"><div>Subject &amp; grade</div><div>Standing vs. nation</div><div class="hideSm">Trajectory</div><div>Beneath the average</div><div>Priority</div></div>'
+  +     rowsHtml
+  +   '</div>'
+  +   '<div class="q2-why"><b>How the priority is built (no black box).</b> A cell rises to <b>Focus now</b> when at least two of three signals are negative and statistically significant \u2014 e.g., below the nation <em>and</em> declining, or flat-after-a-historic-drop <em>and</em> a widening gap beneath the mean. The \u201Cfocus\u201D tag names the lever the pattern implies (early literacy, adolescent literacy, math recovery), but it is a prompt for discussion, not a verdict \u2014 feasibility, cost, and local values decide funding.</div>'
+  +   '<div style="margin-top:14px; font-size:12.5px; color:var(--ink-soft);"><strong style="color:var(--ink);">What\u2019s native vs. joined.</strong> Standing, trajectory, and distribution all come straight from the NAEP Data Service API (<span class="slc-mono">stattype</span> <span class="slc-mono">ALC:AP</span> for proficiency, <span class="slc-mono">PC:P1/P2</span> for the bottom percentiles, and the <span class="slc-mono">sigacrossyear</span> / <span class="slc-mono">gaponvaracrossyear</span> request types for the significance tests). The \u2021 row shows how suppressed small-sample cells are surfaced rather than blanked.</div>'
+  + '</div></div>';
+}
+
+/* --------------------------- shell + state --------------------------- */
+let view = "rigor";
+let stateKey = "Atwater";
+let sgKey = "g4read";
+
+function shell(){
+  const opts = STATE_KEYS.map(function(k){
+    return '<option value="'+k+'"'+(k===stateKey?' selected':'')+'>'+STATES[k].name+' \u2014 '+STATES[k].rigor+'-rigor standard</option>';
+  }).join('');
+  return ''
+  + '<div class="slc"><div class="slc-shell">'
+  +   '<header class="slc-top">'
+  +     '<div class="slc-brand"><div class="slc-mark">Next Gen <b>NAEP</b></div><div class="slc-sub">State Leader Console</div></div>'
+  +     '<div class="slc-controls"><span class="slc-tag">Illustrative · national anchors are 2024 NAEP</span>'
+  +       '<div class="slc-field"><label for="st">State (illustrative)</label><select id="st">'+opts+'</select></div>'
+  +     '</div>'
+  +   '</header>'
+  +   '<nav class="slc-qbar" aria-label="Choose a decision">'
+  +     '<button class="slc-q" data-on="'+(view==='rigor')+'" data-view="rigor">'+icon('chevronRight',18,'qarrow')+'<div class="qn">Decision 01</div><div class="qt">Are our proficiency standards calibrated honestly against NAEP?</div><div class="qd">The \u201Chonesty gap\u201D call \u2014 placing our bar on the NAEP scale to judge relative rigor.</div></button>'
+  +     '<button class="slc-q" data-on="'+(view==='focus')+'" data-view="focus">'+icon('chevronRight',18,'qarrow')+'<div class="qn">Decision 02</div><div class="qt">Where should we direct statewide initiatives and funding?</div><div class="qd">Fuse standing, trajectory, and equity into a defensible focus \u2014 e.g. early literacy, math recovery.</div></button>'
+  +   '</nav>'
+  +   (view==='rigor' ? rigorView(stateKey,sgKey) : focusView(stateKey))
+  +   '<footer class="slc-foot"><div class="srcrow">'+sourceChip('naep')+sourceChip('state')+sourceChip('map')+'</div><span>Every figure is tagged by where it comes from. NAEP alone answers Decision 2; Decision 1 joins NAEP with state-reported rates and the NCES mapping study.</span></footer>'
+  + '</div></div>';
+}
+
+function render(){
+  const root = document.getElementById('root');
+  root.innerHTML = shell();
+  const sel = document.getElementById('st');
+  if(sel) sel.addEventListener('change', function(e){ stateKey = e.target.value; render(); });
+  document.querySelectorAll('.slc-q').forEach(function(b){
+    b.addEventListener('click', function(){ view = b.getAttribute('data-view'); render(); });
+  });
+  document.querySelectorAll('.q1-sgsel button').forEach(function(b){
+    b.addEventListener('click', function(){ sgKey = b.getAttribute('data-sg'); render(); });
+  });
+}
+render();
+</script>
+</body>
+</html>

@@ -13,7 +13,7 @@
     --faint:#8A93A8; --line:#E4E8EF; --line-strong:#CFD6E2;
     --blue:#2E5EAA; --blue-deep:#1B2A4A; --gold:#DBA02B;
     --blue-wash:#F0F5FC;
-    --c-map:#2E5EAA; --c-route:#1F7A52; --c-create:#B4451F;
+    --c-map:#2E5EAA; --c-route:#1F7A52; --c-create:#B4451F; --c-console:#1A7C8A;
     --serif:"Fraunces",Georgia,serif;
     --sans:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
     --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
@@ -23,7 +23,6 @@
     font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;}
   .wrap{max-width:880px;margin:0 auto;padding:0 24px 90px;}
 
-  /* masthead */
   .masthead{padding:56px 0 8px;}
   .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;
     text-transform:uppercase;color:var(--faint);margin:0;}
@@ -33,18 +32,7 @@
     margin:14px 0 0;max-width:15ch;}
   .masthead .lede{font-size:17px;color:var(--slate);max-width:60ch;margin:18px 0 0;}
 
-  /* arc stepper */
-  .arc{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:28px;
-    padding:14px 18px;background:var(--card);border:1px solid var(--line);border-radius:8px;}
-  .arc-step{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--ink);
-    display:inline-flex;align-items:center;gap:7px;}
-  .arc-dot{width:8px;height:8px;border-radius:50%;}
-  .arc-arrow{color:var(--line-strong);font-size:14px;}
-  .arc .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.06em;
-    text-transform:uppercase;color:var(--faint);margin-right:4px;}
-
-  /* tool cards */
-  .tools{margin-top:18px;display:flex;flex-direction:column;gap:14px;}
+  .tools{margin-top:30px;display:flex;flex-direction:column;gap:14px;}
   a.tool{display:flex;gap:18px;align-items:flex-start;text-decoration:none;color:inherit;
     background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);
     border-radius:9px;padding:22px 24px;transition:transform .15s,box-shadow .15s,border-color .15s;}
@@ -99,6 +87,7 @@
 <a href="landscape.html">Landscape</a>
 <a href="front-door.html">Front Door</a>
 <a href="answer-card.html">Answer Card</a>
+<a href="state-console.html">State Console</a>
 </div></div></nav>
 
 <div class="wrap">
@@ -106,16 +95,7 @@
   <header class="masthead">
     <p class="eyebrow"><span class="st">★</span>&nbsp; Next Gen NAEP · Design Sprint Workshop 1</p>
     <h1>Three prototypes for a more usable NAEP</h1>
-    <p class="lede">A small set of concept prototypes built for the design sprint, each probing a different layer of how people access, understand, and act on NAEP data &mdash; moving from diagnosing today's friction to proposing a genuinely new kind of NAEP output. Concept demos for discussion, not live NAEP products.</p>
-
-    <div class="arc">
-      <span class="lbl">The arc</span>
-      <span class="arc-step"><span class="arc-dot" style="background:var(--c-map)"></span>Map what exists</span>
-      <span class="arc-arrow">&rarr;</span>
-      <span class="arc-step"><span class="arc-dot" style="background:var(--c-route)"></span>Make it findable</span>
-      <span class="arc-arrow">&rarr;</span>
-      <span class="arc-step"><span class="arc-dot" style="background:var(--c-create)"></span>Make something new</span>
-    </div>
+    <p class="lede">A small set of concept prototypes built for the design sprint, each probing a different layer of how people access, understand, and act on NAEP data.</p>
   </header>
 
   <section class="tools">
@@ -153,14 +133,25 @@
       <div class="tool-open">Open <span class="ar">&rarr;</span></div>
     </a>
 
+    <a class="tool" href="state-console.html" style="--accent:var(--c-console)">
+      <div class="tool-num">04</div>
+      <div class="tool-body">
+        <p class="tool-kicker">Two decisions</p>
+        <h2 class="tool-title">The State Leader Console</h2>
+        <p class="tool-desc">A console built around two decisions a state leader actually faces: whether the state&rsquo;s own &ldquo;proficient&rdquo; bar is calibrated honestly against the NAEP scale, and where to aim initiatives and funding &mdash; fusing standing, trajectory, and equity into one priority per subject and grade.</p>
+        <p class="tool-demo"><b>Demonstrates</b> &nbsp;Real 2024 national NAEP anchors paired with the NCES standard-mapping method and a no-black-box, significance-tested triage &mdash; every figure tagged by its source. State values are illustrative.</p>
+      </div>
+      <div class="tool-open">Open <span class="ar">&rarr;</span></div>
+    </a>
+
   </section>
 
   <div class="fit">
-    <b>How they fit together.</b> Each prototype is the next rung up. The <b>Landscape</b> diagnoses the problem &mdash; NAEP's outputs are organized around how they're produced, and the most powerful ones reach the fewest people. The <b>Front Door</b> tackles findability by letting people start from their question. The <b>Answer Card</b> goes furthest, turning real data into a synthesized, demographically-fair answer &mdash; which raises the sharpest question for the sprint: how far past pure description is NAEP willing to go?
+    <b>How they fit together.</b> The <b>Landscape</b> diagnoses the problem &mdash; NAEP's outputs are organized around how they're produced, and the most powerful ones reach the fewest people. The <b>Front Door</b> tackles findability by letting people start from their question. The <b>Answer Card</b> turns real data into a synthesized, demographically-fair answer for the public; the <b>State Leader Console</b> reframes NAEP around the decisions a state actually faces &mdash; is our &ldquo;proficient&rdquo; bar honest, and where do we aim funding &mdash; on a shared, source-tagged footing. Both raise the sharpest question for the sprint: how far past pure description is NAEP willing to go?
   </div>
 
   <footer>
-    Concept prototypes for the Next Gen NAEP Design Sprint &mdash; not live NAEP products. Data shown in the Answer Card is real: NAEP 2024 Mathematics, Grade 8 (NCES / The Nation's Report Card) and child poverty from the U.S. Census Bureau, ACS 1-Year, 2023. Built June 2026.
+    Concept prototypes for the Next Gen NAEP Design Sprint &mdash; not live NAEP products. The Answer Card uses real data: NAEP 2024 Mathematics &amp; Reading, Grade 8 (NCES / The Nation's Report Card) and child poverty from the U.S. Census Bureau, ACS 1-Year, 2023. The State Leader Console pairs real 2024 national NAEP anchors with illustrative state values. Built June 2026.
   </footer>
 
 </div>
